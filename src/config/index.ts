@@ -23,7 +23,7 @@ import {
   useWalletInfo
 } from '@reown/appkit/react'
 
-export const projectId = 'b56e18d47c72ab683b10814fe9495694'//process.env.PROJECT_ID; 
+export const projectId = process.env.PROJECT_ID; //'b56e18d47c72ab683b10814fe9495694'
 if (!projectId) {
   throw new Error('Project ID is not defined')
 }
