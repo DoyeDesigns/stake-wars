@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import NavBar from "@/components/NavBar";
+import Script from "next/script";
+import { TelegramProvider } from "@/context/telegram-context";
+import { ToastProvider } from "@/context/toast-context";
 
 import ContextProvider from '@/context'
 
@@ -27,7 +31,16 @@ export const metadata: Metadata = {
     'web3',
     'crypto',
     'blockchain',
-    'dapp'
+    'dapp',
+    'betting',
+    'gambling',
+    'solana',
+    'game',
+    'mini app',
+    'pvp',
+    'staking',
+    'staking wars',
+    'stakingwars',
   ],
   icons: {
     icon: [
@@ -53,7 +66,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <ToastProvider>
+      <TelegramProvider>
         <ContextProvider cookies={null}>{children}</ContextProvider>
+        <Script src="https://telegram.org/js/telegram-web-app.js?56" strategy="beforeInteractive"/>
+        <NavBar />
+        </TelegramProvider>
+      </ToastProvider>
       </body>
     </html>
   );
