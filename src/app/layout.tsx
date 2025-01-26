@@ -5,7 +5,6 @@ import NavBar from "@/components/NavBar";
 import Script from "next/script";
 import { TelegramProvider } from "@/context/telegram-context";
 import { ToastProvider } from "@/context/toast-context";
-
 import ContextProvider from '@/context'
 
 const geistSans = Geist({
@@ -61,6 +60,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body
