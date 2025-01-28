@@ -30,9 +30,9 @@ function CreateGameMultiStepForm() {
   const { caipNetwork } = useAppKitNetwork();
   const { signMessage } = useSignMessage()
 
-  const searchParam = useSearchParams();
 
   useEffect(() => {
+    const searchParam = useSearchParams();
     const roomIdToJoin = searchParam.get('gid');
 
     if (roomIdToJoin) {
@@ -87,7 +87,7 @@ function CreateGameMultiStepForm() {
     router.push(`/game-play/${roomId}`);
   }
 
-  function FlowButton() { 
+  function FlowButton() {
     if (roomToJoinId === null)  {
       return <button
       className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
