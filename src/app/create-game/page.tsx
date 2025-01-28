@@ -20,7 +20,7 @@ function CreateGameMultiStepForm() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [step1Value, setStep1Value] = useState<number | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
-  const [roomStakeDetails, setRoomStakeDetails] = useState<StakeDetails | null>(null)
+  const [roomStakeDetails, setRoomStakeDetails] = useState<StakeDetails | null>(null);
   const [roomId, setRoomId] = useState('');
   const [roomToJoinId, setRoomToJoinId] = useState<string | null>(null);
   const { createOnlineGameRoom, joinGameRoom, selectCharacters, getStakeDetails } = useOnlineGameStore();
@@ -28,33 +28,36 @@ function CreateGameMultiStepForm() {
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
-  const { signMessage } = useSignMessage()
+  const { signMessage } = useSignMessage();
 
+  const searchParams = useSearchParams();
+  const roomIdToJoin = searchParams.get('gid');
 
   useEffect(() => {
-    const searchParam = useSearchParams();
-    const roomIdToJoin = searchParam.get('gid');
-
     if (roomIdToJoin) {
-      setRoomToJoinId(roomIdToJoin)
+      setRoomToJoinId(roomIdToJoin);
     }
-  }, [])
+  }, [roomIdToJoin]);
 
   async function getRoomStakeDetails() {
-    const data = await getStakeDetails(roomToJoinId as string);
-    setRoomStakeDetails(data as StakeDetails)
-  }
-  
-  if (roomToJoinId) {
-    getRoomStakeDetails();
+    if (roomToJoinId) {
+      const data = await getStakeDetails(roomToJoinId);
+      setRoomStakeDetails(data as StakeDetails);
+    }
   }
 
-  const stakeDetails : StakeDetails = {
+  useEffect(() => {
+    if (roomToJoinId) {
+      getRoomStakeDetails();
+    }
+  }, [roomToJoinId]);
+
+  const stakeDetails: StakeDetails = {
     name: caipNetwork?.name as string,
     stakeAmount: step1Value as number,
     symbol: caipNetwork?.nativeCurrency.symbol as string,
     networkId: caipNetwork?.id as string,
-  }
+  };
 
   const handleNext = () => setCurrentStep((prev) => prev + 1);
   const handleBack = () =>
@@ -74,7 +77,7 @@ function CreateGameMultiStepForm() {
   const setStake = (value: number) => {
     signMessage({ message: `sign message to bet ${value}` });
     handleNext();
-  }
+  };
 
   function joinActiveGameRoom(roomId: string) {
     const formData = {
@@ -88,67 +91,81 @@ function CreateGameMultiStepForm() {
   }
 
   function FlowButton() {
-    if (roomToJoinId === null)  {
-      return <button
-      className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
-      onClick={handleSubmit}
-      disabled={!selectedCharacter}
-      >
-        Next
-      </button>
-      } else {
-        return <button
-        className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
-        onClick={() => joinActiveGameRoom(roomToJoinId)}
-        disabled={!selectedCharacter}
+    if (roomToJoinId === null) {
+      return (
+        <button
+          className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+          onClick={handleSubmit}
+          disabled={!selectedCharacter}
+        >
+          Next
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+          onClick={() => joinActiveGameRoom(roomToJoinId)}
+          disabled={!selectedCharacter}
         >
           Join game
         </button>
-      }
+      );
     }
+  }
 
-    if (isConnected === false) return (
+  if (isConnected === false) {
+    return (
       <div className="pt-4 h-screen overflow-auto bg-background flex justify-center items-center px-5">
         <div>
-        {roomStakeDetails ? (<div>set Network to ${roomStakeDetails.name} to join game</div>) : (<></>)}
-        <ConnectButton />
+          {roomStakeDetails ? (
+            <div>Set Network to {roomStakeDetails.name} to join game</div>
+          ) : (
+            <></>
+          )}
+          <ConnectButton />
         </div>
       </div>
-    )
+    );
+  }
 
   return (
     <div className="pt-4 h-screen overflow-auto bg-background flex flex-col items-center px-5">
       <div>
-      {currentStep === 3 ? (<></>) : (<div className="relative">
-              <button onClick={handleBack} className="absolute p-0 bg-transparent top-0 left-0">
-                {currentStep === 1 ? (
-                  <Link href="/play">
-                    <Image
-                      src="/arrow-back.png"
-                      alt="arrow-back"
-                      width={30}
-                      height={30}
-                    />
-                  </Link>
-                ) : (
+        {currentStep === 3 ? (
+          <></>
+        ) : (
+          <div className="relative">
+            <button onClick={handleBack} className="absolute p-0 bg-transparent top-0 left-0">
+              {currentStep === 1 ? (
+                <Link href="/play">
                   <Image
                     src="/arrow-back.png"
                     alt="arrow-back"
                     width={30}
                     height={30}
                   />
-                )}
-              </button>
-            </div>)}
+                </Link>
+              ) : (
+                <Image
+                  src="/arrow-back.png"
+                  alt="arrow-back"
+                  width={30}
+                  height={30}
+                />
+              )}
+            </button>
+          </div>
+        )}
         {currentStep === 1 && (
           <div>
-            <Step1 value={step1Value} onChange={setStep1Value} stakeDetails={roomStakeDetails}/>
+            <Step1 value={step1Value} onChange={setStep1Value} stakeDetails={roomStakeDetails} />
           </div>
         )}
         {currentStep === 2 && (
           <Step2 selectedItem={selectedCharacter} onSelect={setSelectedCharacter} />
         )}
-        {currentStep === 3 && <Step3 roomId={roomId}/>}
+        {currentStep === 3 && <Step3 roomId={roomId} />}
       </div>
 
       <div className="flex justify-center pb-[130px]">
@@ -162,7 +179,7 @@ function CreateGameMultiStepForm() {
           </button>
         )}
         {currentStep === 2 && (
-          <Suspense>
+          <Suspense fallback={<div>Loading...</div>}>
             <FlowButton />
           </Suspense>
         )}
@@ -180,4 +197,10 @@ function CreateGameMultiStepForm() {
   );
 }
 
-export default CreateGameMultiStepForm;
+export default function WrappedCreateGameMultiStepForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateGameMultiStepForm />
+    </Suspense>
+  );
+}
