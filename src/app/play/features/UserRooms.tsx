@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GameRoomDocument, GameRoomPlayer } from '@/store/online-game-store';
 import useOnlineGameStore from '@/store/online-game-store';
 import { useRouter } from 'next/navigation';
+import { useAppKitAccount } from '@reown/appkit/react';
 
 const UserGameRooms = () => {
   const [gameRooms, setGameRooms] = useState<GameRoomDocument[]>([]);
@@ -10,7 +11,8 @@ const UserGameRooms = () => {
   const [sortBy, setSortBy] = useState<'waiting' | 'inProgress' | 'character-select' | null>(null);
 
   const { joinGameRoom, findUserRooms } = useOnlineGameStore();
-  const router = useRouter()
+  const router = useRouter();
+  const { address } = useAppKitAccount();
 
   const fetchUserGameRooms = async () => {
     setLoading(true);
@@ -37,7 +39,7 @@ const UserGameRooms = () => {
 
   const handleJoinRoom = async (roomId: string) => {
     try {
-      await joinGameRoom(roomId);
+      await joinGameRoom(roomId, address as string);
     } catch (err) {
       setError('Failed to join game room');
       console.error(err);
@@ -71,16 +73,16 @@ const UserGameRooms = () => {
           <div tabIndex={0} role="button" className="btn btn-sm h-8 btn-outline text-white hover:bg-background hover:text-white">Sort By</div>
           <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
             <li>
-              <button onClick={() => setSortBy('waiting')}>Waiting</button>
+              <button className='bg-transparent' onClick={() => setSortBy('waiting')}>Waiting</button>
             </li>
             <li>
-              <button onClick={() => setSortBy('inProgress')}>In Progress</button>
+              <button className='bg-transparent' onClick={() => setSortBy('inProgress')}>In Progress</button>
             </li>
             <li>
-              <button onClick={() => setSortBy('character-select')}>Character select</button>
+              <button className='bg-transparent' onClick={() => setSortBy('character-select')}>Character select</button>
             </li>
             <li>
-              <button onClick={() => setSortBy(null)}>Clear Sort</button>
+              <button className='bg-transparent' onClick={() => setSortBy(null)}>Clear Sort</button>
             </li>
           </ul>
         </div>

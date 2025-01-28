@@ -3,10 +3,7 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
   AppKitNetwork,
-  arbitrum,
   mainnet,
-  optimism,
-  polygon,
   solana,
   solanaDevnet,
   solanaTestnet
@@ -30,9 +27,6 @@ if (!projectId) {
 
 export const networks = [
   mainnet,
-  polygon,
-  arbitrum,
-  optimism,
   solana,
   solanaDevnet,
   solanaTestnet
@@ -49,7 +43,6 @@ export const wagmiAdapter = new WagmiAdapter({
 
 export const solanaAdapter = new SolanaAdapter({})
 
-// Create modal
 const modal = createAppKit({
   adapters: [wagmiAdapter, solanaAdapter],
   networks,

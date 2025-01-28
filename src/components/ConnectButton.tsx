@@ -1,8 +1,8 @@
 'use client'
 
 import { useAppKit } from '@reown/appkit/react';
-import { useAppKitAccount } from '@reown/appkit/react';
-import '@reown/appkit-wallet-button/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import Image from 'next/image';
 
 const compactHash = (hash: string) => {
   return hash.slice(0, 7) + '...' + hash.slice(-5)
@@ -10,15 +10,15 @@ const compactHash = (hash: string) => {
 
 export default function ConnectButton() {
   const { open } = useAppKit();
-  const account = useAppKitAccount();
+  const {address, isConnected} = useAppKitAccount();
+  const {caipNetwork} = useAppKitNetwork();
 ;
-  // const compactAddress = compactHash(account.address || '');
+  const compactAddress = compactHash(address || '');
 
   return (
-    <div className="flex items-center gap-2">
-      {/* <span className="text-black truncate ...">Address: {compactAddress}</span> */}
-      <button onClick={() => open()}>Connect Wallet</button>
-      <button onClick={() => open({ view: 'Networks' })}>Select Network</button>
+    <div className="flex flex-col-reverse sm:flex-row items-center gap-2">
+      <button className='btn flex items-center hover:rounded-xl hover:bg-primary/95 items-center border-none bg-accent h-10 w-[201px] text-white font-bold' onClick={() => open()}><span className='flex items-center gap-2'><Image className='inline-block' src='/wallet.png' alt='wallet' width={20} height={20}/> {isConnected ? <span className='truncate ...'>{compactAddress}</span> : 'Connect Wallet'}</span></button>
+      <button className='btn flex justify-center hover:rounded-xl hover:bg-primary/95 items-center border-none bg-accent h-10 w-[201px] text-white font-bold' onClick={() => open({ view: 'Networks' })}>Select Network: {caipNetwork?.name === 'Solana' ? 'Solana-mainnet' : caipNetwork?.name}</button>
     </div>
   )
 }

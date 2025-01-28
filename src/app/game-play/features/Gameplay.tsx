@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import useOnlineGameStore from '@/store/online-game-store';
+import useOnlineGameStore, { StakeDetails } from '@/store/online-game-store';
 import { Ability } from '@/lib/characters';
 import DiceRollToDetermineFirstTurn from '@/components/FirstTurnDiceRoll';
 import DiceRoll from '@/components/DiceRoll';
@@ -12,6 +12,7 @@ import PlayerAbility from './PlayerAbility';
 import WonMessage from './WonMessage'
 import LostMessage from './LostMessage'
  import Image from 'next/image';
+import HowToPlay from '@/components/HowToPlay';
 
 interface LastAttackDetails {
   ability: Ability | null;
@@ -34,6 +35,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [currentUserTelegramId, setCurrentUserTelegramId] = useState<number | null>(null);
   const [showWinner, setShowWinner] = useState(false);
   const [showLoser, setShowLoser] = useState(false);
+  const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
 
   const { addToast } = useToast();
@@ -47,6 +49,23 @@ export default function Gameplay({roomId} : {roomId: string}) {
       unsubscribe();
     };
   }, [gameRoomId, init]);
+
+  useEffect(() => {
+    if (gameRoomId) {
+      const fetchData = async () => {
+          try {
+            const data = await useOnlineGameStore.getState().getStakeDetails(gameRoomId);
+            if (data) {
+              setStakeDetails(data);
+            }
+          } catch (error) {
+            addToast(`${error instanceof Error ? error.message : 'Error fetch stake details'}`)
+          }
+      };
+    
+      fetchData();
+    }
+  })
 
   useEffect(() =>
   {
@@ -68,7 +87,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
     }
   }, [gameState.winner, gameState.gameStatus])
 
-  // Handle defense modal logic
   useEffect(() => {
     if (
       gameState.gameStatus === 'inProgress' &&
@@ -171,17 +189,20 @@ export default function Gameplay({roomId} : {roomId: string}) {
           <DiceRollToDetermineFirstTurn />
         </div>
       </div>
+      <div className='flex justify-end my-2'>
+        <span className='p-2 rounded-[5px] bg-white'><HowToPlay iconSize={12} textSize='text-sm'/></span>
+      </div>
       <div className="flex flex-col justify-center items-center">
         <span className="text-[14px] rounded-[10px] font-extrabold w-[337px] text-center h-[37px] flex justify-center items-center text-white bg-[#5B2D0C]">
-          Battle stake - <span>1000000000</span>$BNK
+          Battle stake - <span>{(stakeDetails?.stakeAmount as number * 2).toLocaleString()}</span>{stakeDetails?.symbol}
         </span>
         <div className='bg-[url("/ability-bg.png")] bg-cover w-[384px] h-[271px] flex justify-center items-center'>
           <PlayerAbility gameState={gameState} userId={currentUserTelegramId} />
         </div>
       </div>
       <div className="absolute h-vh top-0 w-full">
-        {showWinner && <WonMessage />}
-        {showLoser && <LostMessage />}
+        {showWinner && <WonMessage {...stakeDetails as StakeDetails}/>}
+        {showLoser && <LostMessage {...stakeDetails as StakeDetails}/>}
         {showDefenseModal && defendingPlayer === gameState.currentTurn && (
         <DefenseModal
           player={defendingPlayer as 'player1' | 'player2'}

@@ -5,8 +5,9 @@ import Image from 'next/image'
 import { useState } from 'react'
 import ExitGame from './ExitGame';
 import { useRouter } from 'next/navigation';
+import { StakeDetails } from '@/store/online-game-store';
 
-export default function LostMessage() {
+export default function LostMessage(stakeDetails: StakeDetails) {
   const [showExitOptions, setShowExitOptions] = useState(false);
   const router = useRouter();
 
@@ -24,7 +25,7 @@ export default function LostMessage() {
           <div className='flex flex-col justify-center items-center gap-4 -mt-48'>
           <div className='flex flex-col justify-center items-center'>
               <span className='text-white font-extrabold text-[22px] text-center'>You Lost!!</span>
-              <span className='text-white font-extrabold text-[22px] text-center'>1,000,000,000$BNK</span>
+              <span className='text-white font-extrabold text-[22px] text-center'>{stakeDetails.stakeAmount.toLocaleString()}{stakeDetails.symbol}</span>
           </div>
           <button className='btn border-none bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]'><Image src='/telegram-share.png' alt='winner-bg' width={24} height={24} /> Tell your friends</button>
           <button onClick={() => router.push('/create-game')} className='btn border-none bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]'><Image src='/rematch.png' alt='winner-bg' width={24} height={24} /> Rematch</button>

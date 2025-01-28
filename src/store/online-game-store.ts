@@ -105,7 +105,7 @@ interface OnlineGameStore {
     ability: Ability
   ) => void;
   getStakeDetails: (roomId: string) => Promise<StakeDetails | undefined>;
-  createOnlineGameRoom: (stakeAmount: number | null, address: string, stakeDetails: StakeDetails) => Promise<string>;
+  createOnlineGameRoom: (address: string, stakeDetails: StakeDetails) => Promise<string>;
   joinGameRoom: (roomId: string, address: string | null) => Promise<void>;
   findUserRooms: () => Promise<GameRoomDocument[] | null>;
   findOpenGameRoom: () => Promise<GameRoomDocument[] | null>;
@@ -139,7 +139,7 @@ const useOnlineGameStore = create<OnlineGameStore>((set, get) => ({
     },
     currentTurn: 'player1',
     gameStatus: 'character-select',
-    winner: null
+    winner: null,
   },
 
   rollAndRecordDice: async () => {
@@ -358,7 +358,7 @@ checkDiceRollsAndSetTurn: async () => {
     });
   },
 
-  createOnlineGameRoom: async (stakeAmount, address, stakeDetails) => {
+  createOnlineGameRoom: async (address, stakeDetails) => {
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (!telegramUser) {
       throw new Error('Telegram user not found');
@@ -383,7 +383,7 @@ checkDiceRollsAndSetTurn: async () => {
       },
       createdAt: serverTimestamp(),
       gameState: null,
-      stakeAmount: stakeAmount,
+      stakeDetails: stakeDetails,
     });
 
     set({ 
@@ -504,6 +504,7 @@ checkDiceRollsAndSetTurn: async () => {
           lastAttack: roomData?.gameState.lastAttack,
           diceRolls: roomData?.gameState.diceRolls,
           winner: roomData?.gameState.winner,
+          stakeDetails: roomData?.gameState.stakeDetails
         };
   
         return {

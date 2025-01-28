@@ -65,16 +65,15 @@ function CreateGameMultiStepForm() {
       amount: step1Value,
       option: selectedCharacter,
     };
-    const newRoomId = await createOnlineGameRoom(step1Value, address as string, stakeDetails);
+    const newRoomId = await createOnlineGameRoom(address as string, stakeDetails);
     setRoomId(newRoomId);
     selectCharacters(newRoomId, formData?.option?.id as string);
     handleNext();
   };
 
   const setStake = (value: number) => {
-    signMessage({ message: `sign message to bet` });
-    // handleNext();
-    console.log(value);
+    signMessage({ message: `sign message to bet ${value}` });
+    handleNext();
   }
 
   function joinActiveGameRoom(roomId: string) {
@@ -91,7 +90,7 @@ function CreateGameMultiStepForm() {
   function FlowButton() { 
     if (roomToJoinId === null)  {
       return <button
-      className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 rounded-[5px] w-[349px] mt-[35px]"
+      className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
       onClick={handleSubmit}
       disabled={!selectedCharacter}
       >
@@ -99,7 +98,7 @@ function CreateGameMultiStepForm() {
       </button>
       } else {
         return <button
-        className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 rounded-[5px] w-[349px] mt-[35px]"
+        className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
         onClick={() => joinActiveGameRoom(roomToJoinId)}
         disabled={!selectedCharacter}
         >
@@ -121,7 +120,7 @@ function CreateGameMultiStepForm() {
     <div className="pt-4 h-screen overflow-auto bg-background flex flex-col items-center px-5">
       <div>
       {currentStep === 3 ? (<></>) : (<div className="relative">
-              <button onClick={handleBack} className="absolute top-0 left-0">
+              <button onClick={handleBack} className="absolute p-0 bg-transparent top-0 left-0">
                 {currentStep === 1 ? (
                   <Link href="/play">
                     <Image
@@ -155,7 +154,7 @@ function CreateGameMultiStepForm() {
       <div className="flex justify-center pb-[130px]">
         {currentStep < 2 && (
           <button
-            className="bg-primary border-none hover:bg-primary hover:text-white btn !text-white h-12 rounded-[5px] w-[349px] mt-[35px]"
+            className="bg-primary border-none hover:bg-primary hover:text-white btn disabled:!text-white/50 text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
             onClick={() => setStake(step1Value as number)}
             disabled={currentStep === 1 && !step1Value}
           >
@@ -169,7 +168,7 @@ function CreateGameMultiStepForm() {
         )}
         {currentStep === 3 && (
           <button
-            className="bg-white btn font-bold hover:text-primary text-primary hover:bg-white h-12 rounded-[5px] w-fit px-3 mt-[35px]"
+            className="bg-white btn font-bold hover:text-primary text-primary hover:bg-white h-12 !rounded-[5px] w-fit px-3 mt-[35px]"
             disabled={!selectedCharacter}
             onClick={() => router.push('/play')}
           >

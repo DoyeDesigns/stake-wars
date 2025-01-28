@@ -5,8 +5,11 @@ import Image from "next/image";
 import { useState } from "react";
 import ExitGame from "./ExitGame";
 import { useRouter } from "next/navigation";
+import { StakeDetails } from "@/store/online-game-store";
 
-export default function WonMessage() {
+
+
+export default function WonMessage(stakeDetails: StakeDetails) {
   const [showExitOptions, setShowExitOptions] = useState(false);
   const router = useRouter();
 
@@ -37,7 +40,7 @@ export default function WonMessage() {
                 You Won!!
               </span>
               <span className="text-white font-extrabold text-[22px] text-center">
-                1,000,000,000$BNK
+                {(stakeDetails.stakeAmount * 1.8).toLocaleString()}{stakeDetails.symbol}
               </span>
             </div>
             <button className="btn border-none bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]">

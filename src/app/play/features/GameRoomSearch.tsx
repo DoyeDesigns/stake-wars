@@ -67,7 +67,7 @@ const GameRoomSearch = () => {
         <button 
           onClick={handleSearch} 
           disabled={loading}
-          className='btn h-12 border-none bg-primary hover:bg-primary w-full active:bg-primary/80 active:text-white text-white hover:bg-primary/80 mb-4'
+          className='btn h-12 border-none bg-primary hover:bg-primary hover:rounded-xl w-full active:bg-primary/80 active:text-white text-white hover:bg-primary/80 mb-4'
         >
           {loading ? (<span className="text-white">Searching...</span>) : (<span className="text-white">Search</span>)}
         </button>

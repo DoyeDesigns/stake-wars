@@ -4,6 +4,48 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+
+.progress-primary::-moz-progress-bar {
+  @apply bg-gradient-to-r from-primary to-secondary;
+}
+
+.progress-primary:indeterminate {
+  @apply bg-primary border; 
+}
+
+.progress-primary::-webkit-progress-value {
+  @apply bg-primary border;
+}
+
+/* Reverse Progress Bar */
+.progress-reverse {
+  transform: scaleX(-1); /* Flip the progress bar */
+}
+
+.progress-reverse::-webkit-progress-value {
+  transform: scaleX(-1); /* Flip the progress value */
+}
+
+.progress-reverse::-moz-progress-bar {
+  transform: scaleX(-1); /* Flip the progress value */
+}
+
 :root {
   --apkt-background-primary: hsl(0 0% 100%);
   --apkt-background-invert: hsl(0 0% 13%);

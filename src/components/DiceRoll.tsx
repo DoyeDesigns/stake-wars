@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import useOnlineGameStore from '@/store/online-game-store';
-import { useToast } from '@/contexts/toast-context';
+import { useToast } from '@/context/toast-context';
 
 const DiceRoll: React.FC = () => {
   const { rollAndRecordDice, gameState, performAttack, addDefenseToInventory } =

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useOnlineGameStore from "@/store/online-game-store";
 import { GameRoomDocument } from "@/store/online-game-store";
 import { TelegramUser } from "@/context/telegram-context";
+import HowToPlay from "@/components/HowToPlay";
 
 interface PlayerStatisticsProps {
   user: TelegramUser | null;
@@ -35,8 +36,6 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
             acc.totalWins++;
           }
         }
-
-        // logic to track earnings per game, add logic here
       }
 
       return acc;
@@ -117,6 +116,7 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
         </button>
       </div>
       <div className="h-px bg-[#6A6868]"></div>
+      <div className="flex justify-center my-[17px]"><HowToPlay iconSize={12} textSize="text-sm" /></div>
       <div className="flex flex-col items-center pb-[150px] overflow-auto pt-[18px] gap-[6px]">
         {joinedRooms.map((room) => (
             <div key={room.id} className="bg-[#393939] h-[66px] rounded-[10px] flex justify-between items-center w-[364px] min-w-[250px] pr-[18px] pl-8 mx-2">
@@ -138,9 +138,9 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
             </div>
             <div className="text-right">
               <span className="text-[13px] block text-secondary">
-                +
+                {didUserWin(room, user?.id) ? '+' : '-'}
                 <span>
-                  7,000,000<span>$BNK</span>
+                  {room.stakeDetails?.stakeAmount.toLocaleString()}<span>{room.stakeDetails?.symbol}</span>
                 </span>
               </span>
               <div>

@@ -5,7 +5,8 @@ import NavBar from "@/components/NavBar";
 import Script from "next/script";
 import { TelegramProvider } from "@/context/telegram-context";
 import { ToastProvider } from "@/context/toast-context";
-import ContextProvider from '@/context'
+import ContextProvider from '@/context';
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,6 +67,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <Suspense>
       <ToastProvider>
       <TelegramProvider>
         <ContextProvider cookies={null}>{children}</ContextProvider>
@@ -73,6 +75,7 @@ export default function RootLayout({
         <NavBar />
         </TelegramProvider>
       </ToastProvider>
+      </Suspense>
       </body>
     </html>
   );
