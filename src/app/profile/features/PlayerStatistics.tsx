@@ -2,18 +2,16 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import useOnlineGameStore from "@/store/online-game-store";
 import { GameRoomDocument } from "@/store/online-game-store";
-import { TelegramUser } from "@/context/telegram-context";
+import { useAppKitAccount } from "@reown/appkit/react";
 import HowToPlay from "@/components/HowToPlay";
 
-interface PlayerStatisticsProps {
-  user: TelegramUser | null;
-}
 
-
-export default function PlayerStatistics({user} : PlayerStatisticsProps) {
+export default function PlayerStatistics() {
   const { findUserRooms } = useOnlineGameStore();
   const [joinedRooms, setJoinedRooms] = useState<GameRoomDocument[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const {address} = useAppKitAccount()
 
   const [statistics, setStatistics] = useState({
     totalBattles: 0,
@@ -25,15 +23,18 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
     const stats = rooms.reduce((acc, room) => {
       if (room.status === 'finished') {
         acc.totalBattles++;
-
+  
         const gameState = room.gameState;
         if (gameState) {
-          const isPlayer1 = gameState.player1.id === user?.id;
-          const isPlayer2 = gameState.player2.id === user?.id;
-
-          if ((isPlayer1 && gameState.winner === 'player1') || 
-              (isPlayer2 && gameState.winner === 'player2')) {
+          const isPlayer1 = gameState.player1.id === address;
+          const isPlayer2 = gameState.player2.id === address;
+          const didWin = (isPlayer1 && gameState.winner === 'player1') || 
+                        (isPlayer2 && gameState.winner === 'player2');
+  
+          if (didWin) {
             acc.totalWins++;
+            const stakeAmount = room.stakeDetails?.stakeAmount || 0;
+            acc.totalEarnings += stakeAmount * 2;
           }
         }
       }
@@ -51,7 +52,7 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
   const fetchJoinedRooms = async () => {
     setLoading(true);
     try {
-      const rooms = await findUserRooms();
+      const rooms = await findUserRooms(address as string);
       
       const finishedRooms = (rooms || [])
         .filter(room => room.status === 'finished')
@@ -70,14 +71,14 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
   };
 
 
-  const didUserWin = (room: GameRoomDocument, userId: number | undefined) => {
+  const didUserWin = (room: GameRoomDocument, userId: string | undefined) => {
     return (room.gameState?.winner === 'player1' && room.gameState.player1.id === userId) ||
            (room.gameState?.winner === 'player2' && room.gameState.player2.id === userId);
   };
 
   useEffect(() => {
     fetchJoinedRooms();
-  }, []);
+  }, [address]);
 
   return (
     <div>
@@ -90,7 +91,7 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
             <div className="flex gap-10 justify-center items-center pt-7 pb-6">
         <div className="flex flex-col">
           <h1 className="font-bold text-[16px] text-white mb-2">
-          {statistics.totalEarnings.toLocaleString()} <span>$BNK</span>
+          {statistics.totalEarnings.toLocaleString()} <span>SOL</span>
           </h1>
           <span className="font-normal text-[15px] text-secondary">
             Total Earned
@@ -122,23 +123,23 @@ export default function PlayerStatistics({user} : PlayerStatisticsProps) {
             <div key={room.id} className="bg-[#393939] h-[66px] rounded-[10px] flex justify-between items-center w-[364px] min-w-[250px] pr-[18px] pl-8 mx-2">
             <div className="flex gap-3 items-center">
               <Image
-                src={didUserWin(room, user?.id) ? "/history-won-img.png" : "/history-lost-img.png"}
-                alt={didUserWin(room, user?.id) ? "history-won-img.png" : "history-lost-img.png"}
+                src={didUserWin(room, address) ? "/history-won-img.png" : "/history-lost-img.png"}
+                alt={didUserWin(room, address) ? "history-won-img.png" : "history-lost-img.png"}
                 width={39}
                 height={39}
               />
               <div>
-                <h3 className="font-semibold text-[18px] text-white">{didUserWin(room, user?.id) ? 'Won' : 'Lost'}</h3>
+                <h3 className="font-semibold text-[18px] text-white">{didUserWin(room, address) ? 'Won' : 'Lost'}</h3>
                 <span className="text-white text-[13px]">
                   vs <span className="text-secondary uppercase"> {Object.values(room.players)
-                          .find(player => player.telegramId !== user?.id)
-                          ?.username || 'Unknown'}</span>
+                          .find(player => player.wallet !== address)
+                          ?.wallet || 'Unknown'}</span>
                 </span>
               </div>
             </div>
             <div className="text-right">
               <span className="text-[13px] block text-secondary">
-                {didUserWin(room, user?.id) ? '+' : '-'}
+                {didUserWin(room, address) ? '+' : '-'}
                 <span>
                   {room.stakeDetails?.stakeAmount.toLocaleString()}<span>{room.stakeDetails?.symbol}</span>
                 </span>

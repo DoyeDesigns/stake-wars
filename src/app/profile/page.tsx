@@ -2,12 +2,12 @@
 
 import React from 'react'
 import Image from 'next/image'
-import { useUser } from '@/context/telegram-context'
 import PlayerStatistics from './features/PlayerStatistics';
 import ConnectButton from '@/components/ConnectButton';
+import { useAppKitAccount } from "@reown/appkit/react";
 
 export default function Profile() {
-    const { user } = useUser();
+    const {address} = useAppKitAccount();
   return (
     <main className='h-screen overflow-auto bg-background flex flex-col justify-between'>
         <div>
@@ -21,13 +21,12 @@ export default function Profile() {
             </div>
 
             <div className='text-white'>
-                <span className='block text-xl font-bold'>{user?.username ?? user?.first_name ?? user?.last_name ?? user?.id}</span>
-                <span className='inline-flex items-center text-[15px] font-normal uppercase mt-2 mb-[14px]'>{user ? user?.id : "ID: 0A45R1AO"}  <button className='p-0 bg-transparent mt-px ml-2'><Image src='/copy.png' alt='copy' width={20} height={20} /></button></span>
+                <span className='inline-flex items-center text-[15px] font-normal uppercase mt-2 mb-[14px]'><span className={`${address ? 'w-[150px] truncate ...' : ''}`}>{address ? address : "ID: 0A45R1AO"}</span> <button className='p-0 bg-transparent mt-px ml-2'><Image src='/copy.png' alt='copy' width={20} height={20} /></button></span>
                 <ConnectButton />
             </div>
         </div>
         <div className="h-px bg-[#6A6868]"></div>
-        <PlayerStatistics user={user} />
+        <PlayerStatistics/>
         </div>
     </main>
   )

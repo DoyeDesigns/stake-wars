@@ -26,8 +26,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
     init,
   } = useOnlineGameStore();
 
-  console.log('Main game State:', gameState)
-
   const [showSkipDefenseButton, setShowSkipDefenseButton] = useState(false);
   const [lastAttackDetails, setLastAttackDetails] = useState<LastAttackDetails>({ability: null, attackingPlayer: null});
   const [showDefenseModal, setShowDefenseModal] = useState(false);
