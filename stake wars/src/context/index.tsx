@@ -1,35 +1,29 @@
 'use client'
 
 import { solanaWeb3JsAdapter, projectId, networks } from '@/config'
-import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 
+// Set up metadata
 const metadata = {
   name: 'next-reown-appkit',
   description: 'next-reown-appkit',
-  url: 'https://stake-wars.vercel.app',
+  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
+// Create the modal
 export const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   projectId,
-  defaultNetwork: solana,
   networks,
   metadata,
-  featuredWalletIds: [
-    'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-    '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369',
-    '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0'
-  ],
-  themeMode: 'dark',
+  themeMode: 'light',
   features: {
-    analytics: true,
-    onramp: true
+    analytics: true // Optional - defaults to your Cloud configuration
   },
   themeVariables: {
-    '--w3m-accent': '#ffffff',
+    '--w3m-accent': '#000000',
   }
 })
 

@@ -36,8 +36,8 @@ const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
           height={76}
         />
       </div>
-      <div className='flex items-center justify-between '>
-      <h1 className='font-bold text-[19px] text-white mb-9 text-center'>Stake {caipNetwork?.nativeCurrency?.symbol}</h1>
+      <div className='flex items-center justify-between mb-5 w-full'>
+      <h1 className='font-bold text-[19px] text-white text-center'>Stake {caipNetwork?.nativeCurrency?.symbol}</h1>
       <HowToPlay iconSize={12} textSize='text-sm' />
       </div>
 

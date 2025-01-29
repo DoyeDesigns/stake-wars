@@ -14,7 +14,6 @@ import { Suspense } from "react";
 import { StakeDetails } from "@/store/online-game-store";
 import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
 import ConnectButton from "@/components/ConnectButton";
-import { useSignMessage } from 'wagmi';
 
 function CreateGameMultiStepForm() {
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -28,7 +27,6 @@ function CreateGameMultiStepForm() {
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
-  const { signMessage } = useSignMessage();
 
   const searchParams = useSearchParams();
   const roomIdToJoin = searchParams.get('gid');
@@ -74,8 +72,7 @@ function CreateGameMultiStepForm() {
     handleNext();
   };
 
-  const setStake = (value: number) => {
-    signMessage({ message: `sign message to bet ${value}` });
+  const setStake = () => {
     handleNext();
   };
 
@@ -172,7 +169,7 @@ function CreateGameMultiStepForm() {
         {currentStep < 2 && (
           <button
             className="bg-primary border-none hover:bg-primary hover:text-white btn disabled:!text-white/50 text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
-            onClick={() => setStake(step1Value as number)}
+            onClick={() => setStake()}
             disabled={currentStep === 1 && !step1Value}
           >
             Set Stake
