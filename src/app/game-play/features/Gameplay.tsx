@@ -13,6 +13,7 @@ import WonMessage from './WonMessage'
 import LostMessage from './LostMessage'
  import Image from 'next/image';
 import HowToPlay from '@/components/HowToPlay';
+import { useAppKitAccount } from '@reown/appkit/react';
 
 interface LastAttackDetails {
   ability: Ability | null;
@@ -30,13 +31,13 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [lastAttackDetails, setLastAttackDetails] = useState<LastAttackDetails>({ability: null, attackingPlayer: null});
   const [showDefenseModal, setShowDefenseModal] = useState(false);
   const [defendingPlayer, setDefendingPlayer] = useState('');
-  const [currentUserTelegramId, setCurrentUserTelegramId] = useState<number | null>(null);
   const [showWinner, setShowWinner] = useState(false);
   const [showLoser, setShowLoser] = useState(false);
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
 
   const { addToast } = useToast();
+  const {address} = useAppKitAccount();
 
   const gameRoomId = roomId;
 
@@ -65,18 +66,10 @@ export default function Gameplay({roomId} : {roomId: string}) {
     }
   })
 
-  useEffect(() =>
-  {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-      if (telegramUser?.id) {
-        setCurrentUserTelegramId(telegramUser.id);
-      }
-  }, [currentUserTelegramId])
-
   useEffect(() => {
     if (gameState.winner === 'player1' || gameState.winner === 'player2' && gameState.gameStatus === 'finished') {
       addToast(`${gameState.winner} has won the game`, 'info');
-      if (currentUserTelegramId === gameState[gameState?.winner]?.id) {
+      if (address === gameState[gameState?.winner]?.id) {
         setShowWinner(true); 
       } else {
         setShowLoser(true);
@@ -100,7 +93,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
       const attackingPlayer = gameState.lastAttack.attackingPlayer;
       const defendingPlayer = attackingPlayer === 'player1' ? 'player2' : 'player1';
 
-      if (currentUserTelegramId === gameState[defendingPlayer]?.id) {
+      if (address === gameState[defendingPlayer]?.id) {
         const defenseInventory = gameState[defendingPlayer]?.defenseInventory || {};
         const hasDefenses = Object.values(defenseInventory).some((count) => count > 0);
   
@@ -195,7 +188,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
           Battle stake - <span>{(stakeDetails?.stakeAmount as number * 2).toLocaleString()}</span>{stakeDetails?.symbol}
         </span>
         <div className='bg-[url("/ability-bg.png")] bg-cover w-[384px] h-[271px] flex justify-center items-center'>
-          <PlayerAbility gameState={gameState} userId={currentUserTelegramId} />
+          <PlayerAbility gameState={gameState} userId={address as string} />
         </div>
       </div>
       <div className="absolute h-vh top-0 w-full">

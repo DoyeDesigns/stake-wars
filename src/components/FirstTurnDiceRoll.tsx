@@ -1,22 +1,16 @@
 'use client'
 
 import useOnlineGameStore from "@/store/online-game-store";
-import React, { useEffect, useState } from "react";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const DiceRollToDetermineFirstTurn = () => {
     const { checkDiceRollsAndSetTurn, rollAndRecordDice, gameState } = useOnlineGameStore();
 
-    const [telegramUserId, setTelegramUserId] = useState<number | null>(null);
-
-    useEffect(() => {
-      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-        setTelegramUserId(window.Telegram.WebApp.initDataUnsafe.user.id);
-      }
-    }, []);
+    const {address} = useAppKitAccount();
   
     const hasPlayerRolled = (() => {
-      if (gameState?.diceRolls && telegramUserId !== null) {
-        return telegramUserId in gameState.diceRolls;
+      if (gameState?.diceRolls && address !== null) {
+        return address as string in gameState.diceRolls;
       }
       return false;
     })();
@@ -43,7 +37,7 @@ const DiceRollToDetermineFirstTurn = () => {
           onClick={handleRollDice}
           >Roll Dice to determine first player
         </button>
-        <p>{gameState?.diceRolls?.[telegramUserId!]}</p>
+        <p>{gameState?.diceRolls?.[address!]}</p>
       </div>
     );
   };

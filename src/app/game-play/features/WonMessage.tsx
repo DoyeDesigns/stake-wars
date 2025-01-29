@@ -40,7 +40,7 @@ export default function WonMessage(stakeDetails: StakeDetails) {
                 You Won!!
               </span>
               <span className="text-white font-extrabold text-[22px] text-center">
-                {(stakeDetails.stakeAmount * 1.8).toLocaleString()}{stakeDetails.symbol}
+                {(stakeDetails.stakeAmount * 2).toLocaleString()}{stakeDetails.symbol}
               </span>
             </div>
             <button className="btn border-none bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]">

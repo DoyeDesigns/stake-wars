@@ -1,28 +1,24 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import useOnlineGameStore from '@/store/online-game-store';
 import { useToast } from '@/context/toast-context';
+import { useAppKitAccount } from '@reown/appkit/react';
 
 const DiceRoll: React.FC = () => {
   const { rollAndRecordDice, gameState, performAttack, addDefenseToInventory } =
     useOnlineGameStore();
   const [rollNumber, setRollNumber] = useState(0);
-  const [telegramUserId, setTelegramUserId] = useState<number | null>(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { addToast } = useToast();
 
-  useEffect(() => {
-    if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-      setTelegramUserId(window.Telegram.WebApp.initDataUnsafe.user.id);
-    }
-  }, []);
+  const {address} = useAppKitAccount();
 
   const isPlayerTurn = (() => {
     // Check if game is in progress and both players have selected characters
     if (gameState?.gameStatus !== 'inProgress') return false;
     // Check if player1 or player2 ID matches the current user's ID
-    const isPlayer1 = gameState.player1?.id === telegramUserId;
-    const isPlayer2 = gameState.player2?.id === telegramUserId;
+    const isPlayer1 = gameState.player1?.id === address;
+    const isPlayer2 = gameState.player2?.id === address;
     // Determine if it's this player's turn based on current turn and player role
     if (isPlayer1 && gameState.currentTurn === 'player1') return true;
     if (isPlayer2 && gameState.currentTurn === 'player2') return true;
@@ -57,7 +53,6 @@ const DiceRoll: React.FC = () => {
               );
             }
           } else {
-            // For attack abilities
             performAttack(currentPlayer, ability);
             addToast(`${currentPlayer} attacked`, 'info')
           }
@@ -67,7 +62,6 @@ const DiceRoll: React.FC = () => {
       }
       setRollNumber(rolledDiceNumber);
 
-      // Set a timeout to re-enable the button after 3 seconds
       setTimeout(() => {
         setIsButtonDisabled(false);
       }, 3000);
@@ -75,7 +69,6 @@ const DiceRoll: React.FC = () => {
     } catch (error) {
       console.error('Error rolling dice:', error);
       
-      // Ensure button is re-enabled even if there's an error
       setTimeout(() => {
         setIsButtonDisabled(false);
       }, 3000);

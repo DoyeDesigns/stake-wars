@@ -3,7 +3,7 @@ import { GameRoomDocument } from '@/store/online-game-store';
 
 export default function PlayerAbility({ gameState, userId }: {
   gameState?: GameRoomDocument['gameState'],
-  userId: number | null
+  userId: string | null
 }) {
   const isPlayer1 = gameState?.player1.id === userId;
   const isPlayer2 = gameState?.player2.id === userId;
