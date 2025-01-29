@@ -68,7 +68,7 @@ function CreateGameMultiStepForm() {
     };
     const newRoomId = await createOnlineGameRoom(address as string, stakeDetails);
     setRoomId(newRoomId);
-    selectCharacters(newRoomId, formData?.option?.id as string);
+    selectCharacters(newRoomId, formData?.option?.id as string, address as string);
     handleNext();
   };
 
@@ -83,7 +83,7 @@ function CreateGameMultiStepForm() {
     };
 
     joinGameRoom(roomId, address as string);
-    selectCharacters(roomId, formData?.option?.id as string);
+    selectCharacters(roomId, formData?.option?.id as string, address as string);
     router.push(`/game-play/${roomId}`);
   }
 

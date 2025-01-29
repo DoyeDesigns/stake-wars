@@ -27,8 +27,6 @@ export type StakeDetails = {
 }
 
 export interface GameRoomPlayer {
-  telegramId: number;
-  username?: string;
   characterId: string | null;
   role: 'creator' | 'challenger';
   diceRoll?: number;
@@ -37,10 +35,10 @@ export interface GameRoomPlayer {
 
 export interface GameRoomDocument {
   id: string;
-  createdBy: number;
+  createdBy: string;
   status: 'waiting' | 'character-select' | 'inProgress' | 'finished';
   players: {
-    [telegramId: number]: GameRoomPlayer;
+    [address: string]: GameRoomPlayer;
   };
   createdAt: Timestamp;
   gameState?: GameState;
@@ -53,7 +51,7 @@ interface DefenseInventory {
 
 interface GameState {
   player1: {
-    id: number | null;
+    id: string | null;
     character?: Character;
     currentHealth: number;
     defenseInventory: DefenseInventory;
@@ -63,7 +61,7 @@ interface GameState {
     };
   };
   player2: {
-    id: number | null;
+    id: string | null;
     character?: Character;
     currentHealth: number;
     defenseInventory: DefenseInventory;
@@ -86,12 +84,12 @@ interface GameState {
 
 interface OnlineGameStore {
   roomId: string | null;
-  setRoomId: (roomId: string) => void;
-  playerTelegramId: number | null;
+  setRoomId: (roomId: string, address: string) => void;
+  playerAddress: string | null;
   gameState: GameState;
   rollAndRecordDice: () => Promise<number>;
   checkDiceRollsAndSetTurn: () => void;
-  selectCharacters: (roomId: string, characterId: string) => void;
+  selectCharacters: (roomId: string, characterId: string, playerAddress: string) => void;
   performAttack: (attackingPlayer: 'player1' | 'player2', ability: Ability) => void;
   useDefense: (
     defendingPlayer: 'player1' | 'player2',
@@ -105,25 +103,22 @@ interface OnlineGameStore {
     ability: Ability
   ) => void;
   getStakeDetails: (roomId: string) => Promise<StakeDetails | undefined>;
-  createOnlineGameRoom: (address: string, stakeDetails: StakeDetails) => Promise<string>;
-  joinGameRoom: (roomId: string, address: string | null) => Promise<void>;
-  findUserRooms: () => Promise<GameRoomDocument[] | null>;
-  findOpenGameRoom: () => Promise<GameRoomDocument[] | null>;
+  createOnlineGameRoom: (playerAddress: string, stakeDetails: StakeDetails) => Promise<string>;
+  joinGameRoom: (roomId: string, playerAddress: string | null) => Promise<void>;
+  findUserRooms: (playerAddress: string) => Promise<GameRoomDocument[] | null>;
+  findOpenGameRoom: (playerAddress: string) => Promise<GameRoomDocument[] | null>;
   init: (roomId: string) => () => void;
 }
 
 const useOnlineGameStore = create<OnlineGameStore>((set, get) => ({
   roomId: null,
-  setRoomId: (id: string) => {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (!telegramUser) return;
-
+  setRoomId: (roomId: string, address: string) => {
     set({ 
-      roomId: id, 
-      playerTelegramId: telegramUser.id 
+      roomId: roomId,
+      playerAddress: address
     });
   },
-  playerTelegramId: null,
+  playerAddress: null,
   gameState: {
     player1: {
       id: null,
@@ -143,8 +138,8 @@ const useOnlineGameStore = create<OnlineGameStore>((set, get) => ({
   },
 
   rollAndRecordDice: async () => {
-    const { roomId, playerTelegramId } = get();
-    if (!roomId || !playerTelegramId) {
+    const { roomId, playerAddress } = get();
+    if (!roomId || !playerAddress) {
       throw new Error('No active game room');
     }
   
@@ -152,8 +147,8 @@ const useOnlineGameStore = create<OnlineGameStore>((set, get) => ({
     const roomRef = doc(db, 'gameRooms', roomId);
   
     updateDoc(roomRef, {
-      [`players.${playerTelegramId}.diceRoll`]: diceRoll,
-      [`gameState.diceRolls.${playerTelegramId}`]: diceRoll
+      [`players.${playerAddress}.diceRoll`]: diceRoll,
+      [`gameState.diceRolls.${playerAddress}`]: diceRoll
     });
   
     return diceRoll;
@@ -205,10 +200,9 @@ checkDiceRollsAndSetTurn: async () => {
 },
 
 
-  selectCharacters: async (roomId: string, characterId: string) => {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (!telegramUser) {
-      throw new Error('Telegram user not found');
+  selectCharacters: async (roomId: string, characterId: string, playerAddress: string) => {
+    if (!playerAddress) {
+      throw new Error('User not found');
     }
   
     const roomRef = doc(db, 'gameRooms', roomId);
@@ -220,18 +214,18 @@ checkDiceRollsAndSetTurn: async () => {
   
     if (!gameRoomDoc.exists()) throw new Error('Game room not found');
   
-    const isPlayer1 = gameRoomDoc.data()?.createdBy === telegramUser?.id;
+    const isPlayer1 = gameRoomDoc.data()?.createdBy === playerAddress;
   
-    const existingCharacterId = gameRoomDoc.data()?.players?.[telegramUser.id]?.characterId;
+    const existingCharacterId = gameRoomDoc.data()?.players?.[playerAddress]?.characterId;
     if (existingCharacterId) {
       throw new Error('Character already selected');
     }
   
   updateDoc(roomRef, {
-    [`players.${telegramUser.id}.characterId`]: characterId,
+    [`players.${playerAddress}.characterId`]: characterId,
     [`gameState.${isPlayer1 ? 'player1' : 'player2'}.character`]: playerCharacter,
     [`gameState.${isPlayer1 ? 'player1' : 'player2'}.currentHealth`]: playerCharacter.baseHealth,
-    [`gameState.${isPlayer1 ? 'player1' : 'player2'}.id`]: telegramUser.id,
+    [`gameState.${isPlayer1 ? 'player1' : 'player2'}.id`]: playerAddress,
     [`gameState.gameStatus`]: 'character-select',
     'status': 'character-select'
   });
@@ -358,10 +352,9 @@ checkDiceRollsAndSetTurn: async () => {
     });
   },
 
-  createOnlineGameRoom: async (address, stakeDetails) => {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (!telegramUser) {
-      throw new Error('Telegram user not found');
+  createOnlineGameRoom: async (playerAddress, stakeDetails) => {
+    if (!playerAddress) {
+      throw new Error('User not found');
     }
 
     const roomRef = doc(collection(db, 'gameRooms'));
@@ -369,16 +362,14 @@ checkDiceRollsAndSetTurn: async () => {
 
     await setDoc(roomRef, {
       id: roomId,
-      createdBy: telegramUser.id,
+      createdBy: playerAddress,
       status: 'waiting',
       players: {
-        [telegramUser.id]: {
-          telegramId: telegramUser.id,
-          username: telegramUser.username,
+        [playerAddress]: {
           characterId: null,
           role: 'creator',
           diceRoll: null,
-          wallet: address,
+          wallet: playerAddress,
         }
       },
       createdAt: serverTimestamp(),
@@ -388,7 +379,7 @@ checkDiceRollsAndSetTurn: async () => {
 
     set({ 
       roomId, 
-      playerTelegramId: telegramUser.id 
+      playerAddress: playerAddress 
     });
 
     return roomId;
@@ -404,43 +395,40 @@ checkDiceRollsAndSetTurn: async () => {
     return roomData?.stakeDetails;
   },
 
-  joinGameRoom: async (roomId, address) => {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (!telegramUser) {
-      throw new Error('Telegram user not found');
+  joinGameRoom: async (roomId, playerAddress) => {
+    if (!playerAddress) {
+      throw new Error('User not found');
     }
 
     const roomRef = doc(db, 'gameRooms', roomId);
    
     updateDoc(roomRef, {
-      [`players.${telegramUser.id}`]: {
-        telegramId: telegramUser.id,
-        username: telegramUser.username,
+      [`players.${playerAddress}`]: {
         characterId: null,
         role: 'challenger',
-        wallet: address,
+        wallet: playerAddress,
+        diceRoll: null,
       },
       status: 'character-select'
     });
 
     set({
       roomId,
-      playerTelegramId: telegramUser.id
+      playerAddress: playerAddress
     });
 },
 
-  findOpenGameRoom: async () => {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  findOpenGameRoom: async (playerAddress: string) => {
   
-    if (!telegramUser) {
-      throw new Error('Telegram user not found');
+    if (!playerAddress) {
+      throw new Error('User not found');
     }
   
     const roomsRef = collection(db, 'gameRooms');
     const q = query(
       roomsRef, 
       where('status', '==', 'waiting'),
-      where('createdBy', '!=', telegramUser.id)
+      where('createdBy', '!=', playerAddress)
     );
   
     const querySnapshot = await getDocs(q);
@@ -454,10 +442,9 @@ checkDiceRollsAndSetTurn: async () => {
     return rooms;
   },
 
-  findUserRooms: async () => {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  findUserRooms: async (playerAddress: string) => {
   
-    if (!telegramUser) {
+    if (!playerAddress) {
       throw new Error('Telegram user not found');
     }
   
@@ -465,7 +452,7 @@ checkDiceRollsAndSetTurn: async () => {
     
     const q = query(
       roomsRef,
-      where('players.' + telegramUser.id, '!=', null) 
+      where('players.' + playerAddress, '!=', null) 
     );
   
     const querySnapshot = await getDocs(q);

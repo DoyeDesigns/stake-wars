@@ -19,7 +19,7 @@ const UserGameRooms = () => {
     setError(null);
 
     try {
-      const rooms = await findUserRooms();
+      const rooms = await findUserRooms(address as string);
       const filteredRooms = rooms?.filter(
         (room) => room.status === 'waiting' || room.status === 'inProgress' || room.status === 'character-select'
       );
@@ -56,9 +56,9 @@ const UserGameRooms = () => {
     ];
   };
 
-  const getUsernameById = (players: { [telegramId: number]: GameRoomPlayer }, userId: number): string => {
+  const getUsernameById = (players: { [address: string]: GameRoomPlayer }, userId: string): string => {
     const player = players[userId];
-    return player?.username || 'Unknown User';
+    return player?.wallet || 'Unknown User';
   };
 
   return (
@@ -110,6 +110,9 @@ const UserGameRooms = () => {
             <div className="space-y-2 text-[14px]">
               <p>
                 <strong>Room ID:</strong> {gameRoom.id}
+              </p>
+              <p>
+                <strong>Staked Amount:</strong> {gameRoom.stakeDetails?.stakeAmount} {gameRoom.stakeDetails?.symbol}
               </p>
               <p>
                 <strong>Created By:</strong> {getUsernameById(gameRoom.players, gameRoom.createdBy)}

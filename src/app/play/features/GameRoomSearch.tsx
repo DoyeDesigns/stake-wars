@@ -95,6 +95,9 @@ const GameRoomSearch = () => {
                 <strong>Room ID:</strong> {gameRoom.id}
               </p>
               <p>
+                <strong>Staked Amount:</strong> {gameRoom.stakeDetails?.stakeAmount} {gameRoom.stakeDetails?.symbol}
+              </p>
+              <p>
                 <strong>Created By:</strong> {gameRoom.createdBy}
               </p>
               <p>
