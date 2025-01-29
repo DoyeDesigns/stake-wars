@@ -6,8 +6,8 @@ import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 
 const metadata = {
-  name: 'next-reown-appkit',
-  description: 'next-reown-appkit',
+  name: 'Stake Wars',
+  description: 'PvP betting game',
   url: 'https://stake-wars.vercel.app',
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }

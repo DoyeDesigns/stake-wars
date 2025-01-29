@@ -91,7 +91,7 @@ function CreateGameMultiStepForm() {
     if (roomToJoinId === null) {
       return (
         <button
-          className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+          className="bg-primary border-none disabled:!text-white/50 hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
           onClick={handleSubmit}
           disabled={!selectedCharacter}
         >
@@ -101,7 +101,7 @@ function CreateGameMultiStepForm() {
     } else {
       return (
         <button
-          className="bg-primary border-none hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+          className="bg-primary border-none disabled:!text-white/50 hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
           onClick={() => joinActiveGameRoom(roomToJoinId)}
           disabled={!selectedCharacter}
         >
