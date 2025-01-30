@@ -1,8 +1,7 @@
 # 🎮 Stake Wars(A Crypto Combat Arena): PvP Battle Game
 
-<!-- ![Game Banner](./public/stake-wars-logo.png) -->
 <div align="center">
-  <img src="./public/your-logo.png" alt="Logo" width="200"/>
+  <img src="./public/stake-wars-logo.png" alt="Logo" width="200"/>
 </div>
 
 A blockchain-based battling game where players stake SOL, choose unique characters, and engage in dice-driven tactical combat on the Solana chain.
@@ -29,7 +28,9 @@ A blockchain-based battling game where players stake SOL, choose unique characte
 ## 🎮 Gameplay Overview
 
 ### 🛡️ Setup Phase
-![Create Game](/path/to/create-game.gif)
+<div align="center">
+  <img src="/public/create-game.gif" alt="Logo" width="200"/>
+</div>
 
 1. **Wallet Connection**
    - Connect multi-chain wallet using Reown AppKit
