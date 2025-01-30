@@ -15,7 +15,7 @@ export default function Profile() {
             <div>
                 <div className="avatar mt-2">
                     <div className="ring-[#f0b803] ring-offset-background w-[94px] h-[94px] rounded-full ring ring-offset-2">
-                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                        <img src="/avater.jpg" />
                     </div>
                 </div>
             </div>
