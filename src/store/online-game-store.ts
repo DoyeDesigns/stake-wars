@@ -446,7 +446,7 @@ checkDiceRollsAndSetTurn: async () => {
   findUserRooms: async (playerAddress: string) => {
   
     if (!playerAddress) {
-      throw new Error('Telegram user not found');
+      throw new Error('User not found');
     }
   
     const roomsRef = collection(db, 'gameRooms');

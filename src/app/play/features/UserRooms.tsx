@@ -112,7 +112,7 @@ const UserGameRooms = () => {
               <p>
                 <strong>Staked Amount:</strong> {gameRoom.stakeDetails?.stakeAmount} {gameRoom.stakeDetails?.symbol}
               </p>
-              <p>
+              <p className='text-wrap'>
                 <strong>Created By:</strong> {getUsernameById(gameRoom.players, gameRoom.createdBy)}
               </p>
               <p>
