@@ -16,7 +16,7 @@ export default function LostMessage(stakeDetails: StakeDetails) {
   }
 
   return (
-    <div className='bg-[#191919]/60 h-full w-full top-0 left-0'>
+    <div className='bg-[#191919]/60 h-screen w-full top-0 left-0'>
       {showExitOptions ? (<ExitGame showExitOptions={showExitOptions} setShowExitOptions={setShowExitOptions} />) : (<div className='flex flex-col justify-center items-center h-screen'>
         <div className='flex justify-end w-[60%] -mt-20'>
         </div>

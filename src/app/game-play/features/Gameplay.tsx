@@ -6,7 +6,7 @@ import { Ability } from '@/lib/characters';
 import DiceRollToDetermineFirstTurn from '@/components/FirstTurnDiceRoll';
 import DiceRoll from '@/components/DiceRoll';
 import DefenseModal from '@/components/DefenceModal';
-import { useToast } from '@/context/toast-context';
+import { toast } from 'react-toastify';
 import PlayerHealth, { OpponentPlayerHealth } from "./PlayerHealth";
 import PlayerAbility from './PlayerAbility';
 import WonMessage from './WonMessage'
@@ -35,8 +35,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [showLoser, setShowLoser] = useState(false);
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
-
-  const { addToast } = useToast();
   const {address} = useAppKitAccount();
 
   const gameRoomId = roomId;
@@ -58,7 +56,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
               setStakeDetails(data);
             }
           } catch (error) {
-            addToast(`${error instanceof Error ? error.message : 'Error fetch stake details'}`)
+            toast.error(`${error instanceof Error ? error.message : 'Error fetch stake details'}`)
           }
       };
     
@@ -68,7 +66,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
 
   useEffect(() => {
     if (gameState.winner === 'player1' || gameState.winner === 'player2' && gameState.gameStatus === 'finished') {
-      addToast(`${gameState.winner} has won the game`, 'info');
+      toast.info(`${gameState.winner} has won the game`);
       if (address === gameState[gameState?.winner]?.id) {
         setShowWinner(true); 
       } else {
@@ -103,7 +101,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
           setShowSkipDefenseButton(true);
         } else {
           useOnlineGameStore.getState().skipDefense(defendingPlayer, gameState.lastAttack.ability.value, gameState.lastAttack.ability);
-          addToast(`You took -${gameState.lastAttack.ability.value} damage`, 'info')
+          toast.warn(`You took -${gameState.lastAttack.ability.value} damage`)
         }
       }
     } else {
@@ -120,7 +118,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
  
     if (defenseType === null) {
       useOnlineGameStore.getState().skipDefense(defendingPlayer, incomingDamage, ability);
-      addToast(`${defendingPlayer} took -${incomingDamage} damage from ${ability.name}`, 'info');
+      toast.warn(`${defendingPlayer} took -${incomingDamage} damage from ${ability.name}`);
     } else {
       const defenseAbility: Ability = {
         id: `${defendingPlayer}-${defenseType}`,
@@ -140,13 +138,13 @@ export default function Gameplay({roomId} : {roomId: string}) {
       if (wasDefenseSuccessful) {
         switch (defenseType) {
           case 'dodge':
-            addToast(`${defendingPlayer} dodged the attack`, 'info');
+            toast.info(`${defendingPlayer} dodged the attack`);
             break;
           case 'block':
-            addToast(`${defendingPlayer} blocked the attack`, 'info');
+            toast.info(`${defendingPlayer} blocked the attack`);
             break;
           case 'reflect':
-            addToast(`${defendingPlayer} reflected the attack`, 'info');
+            toast.info(`${defendingPlayer} reflected the attack`);
             break;
         }
       }

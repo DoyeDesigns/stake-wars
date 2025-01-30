@@ -60,7 +60,7 @@ const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
       </div>
 
       <div>
-        {stakeDetails?.stakeAmount && (<span>You must stake same amount as game creator {stakeDetails?.stakeAmount} ${stakeDetails.symbol} (${stakeDetails.name})</span>)}
+        {stakeDetails?.stakeAmount && (<span className='text-white !mb-2'>You must stake same amount as game creator {stakeDetails?.stakeAmount} {stakeDetails.symbol} ({stakeDetails.name})</span>)}
         <input
           id="step1-input"
           type="number"

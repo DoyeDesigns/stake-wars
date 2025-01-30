@@ -1,12 +1,11 @@
 import React from 'react';
-import { useToast } from '@/context/toast-context';
+import { toast } from 'react-toastify';
 
 function Step3({roomId} : {roomId : string}) {
-  const { addToast } = useToast();
 
   function handleClick(roomId: string) {
     navigator.clipboard.writeText(roomId)
-    addToast('Copied room Id to clipboard', 'info')
+    toast.info('Copied room Id to clipboard')
   };
 
   return (

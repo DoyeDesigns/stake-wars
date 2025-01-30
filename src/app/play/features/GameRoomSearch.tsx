@@ -40,7 +40,6 @@ const GameRoomSearch = () => {
       }
     } catch (err) {
       setError('Error searching for game room');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -99,9 +98,6 @@ const GameRoomSearch = () => {
               </p>
               <p>
                 <strong>Created By:</strong> {gameRoom.createdBy}
-              </p>
-              <p>
-                <strong>Staked Amount:</strong> {gameRoom.createdBy}
               </p>
               <p>
                 <strong>Status:</strong> 

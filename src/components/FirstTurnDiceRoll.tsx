@@ -2,6 +2,7 @@
 
 import useOnlineGameStore from "@/store/online-game-store";
 import { useAppKitAccount } from "@reown/appkit/react";
+import { toast } from 'react-toastify';
 
 const DiceRollToDetermineFirstTurn = () => {
     const { checkDiceRollsAndSetTurn, rollAndRecordDice, gameState } = useOnlineGameStore();
@@ -17,7 +18,7 @@ const DiceRollToDetermineFirstTurn = () => {
   
     const handleRollDice = async () => {
       if (hasPlayerRolled) {
-        console.warn('You have already rolled the dice.');
+        toast.info('You have already rolled the dice.');
         return;
       }
   
@@ -25,7 +26,9 @@ const DiceRollToDetermineFirstTurn = () => {
         rollAndRecordDice();
         checkDiceRollsAndSetTurn();
       } catch (error) {
-        console.error('Error rolling dice:', error);
+        if (error instanceof Error) {
+          toast.error(`Error rolling dice: ${error}`);
+        }
       }
     };
   

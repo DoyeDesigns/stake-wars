@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { CHARACTERS, Character, Ability } from '@/lib/characters';
+import { toast } from 'react-toastify';
 import { Timestamp } from 'firebase/firestore';
 
 type UpdateData = {
@@ -166,7 +167,7 @@ checkDiceRollsAndSetTurn: async () => {
 
   const { players, gameState } = roomData;
   if (!players || !gameState?.diceRolls) {
-    console.error('Players or dice rolls are missing.');
+    toast.error('Players or dice rolls are missing.');
     return;
   }
 
@@ -177,7 +178,7 @@ checkDiceRollsAndSetTurn: async () => {
     playerIds.length !== 2 ||
     playerIds.some((id) => diceRolls[id] === undefined)
   ) {
-    console.error('Not all players have rolled their dice.');
+    toast.error('Not all players have rolled their dice.');
     return;
   }
 
@@ -283,7 +284,7 @@ checkDiceRollsAndSetTurn: async () => {
     if (!roomId) throw new Error('No active game room');
  
     if (!defenseAbility?.defenseType) {
-      console.error('Invalid defense ability provided');
+      toast.error('Invalid defense ability provided');
       return false;
     }
  
@@ -321,7 +322,7 @@ checkDiceRollsAndSetTurn: async () => {
         break;
  
       default:
-        console.error('Unknown defense type');
+        toast.error('Unknown defense type');
         return false;
     }
  

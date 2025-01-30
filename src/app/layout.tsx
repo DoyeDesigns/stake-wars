@@ -4,13 +4,12 @@ import './globals.css';
 import ContextProvider from '@/context'
 import NavBar from "@/components/NavBar";
 import Script from "next/script";
-import { TelegramProvider } from "@/context/telegram-context";
-import { ToastProvider } from "@/context/toast-context";
+import { ToastContainer } from 'react-toastify';
 
 export const metadata: Metadata = {
   title: "Stake Wars",
   description: "A PvP betting game",
-  creator: 'reown, inc.',
+  creator: 'DoyeCodes',
   keywords: [
     'appkit',
     'reown',
@@ -41,13 +40,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-      <ToastProvider>
-      <TelegramProvider>
         <ContextProvider>{children}</ContextProvider>
         <Script src="https://telegram.org/js/telegram-web-app.js?56" strategy="beforeInteractive"/>
         <NavBar />
-        </TelegramProvider>
-      </ToastProvider>
+        <ToastContainer autoClose={3000} />
       </body>
     </html>
   );

@@ -26,7 +26,6 @@ const UserGameRooms = () => {
       setGameRooms(filteredRooms || []);
     } catch (err) {
       setError('Failed to load game rooms');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -42,7 +41,6 @@ const UserGameRooms = () => {
       await joinGameRoom(roomId, address as string);
     } catch (err) {
       setError('Failed to join game room');
-      console.error(err);
     } finally {
       router.push(`/game-play/${roomId}`);
     }
@@ -66,11 +64,11 @@ const UserGameRooms = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-white font-bold">Your Game Rooms</h2>
         <div className="flex gap-2">
-        <button className="btn btn-sm btn-outline text-white hover:bg-background hover:text-white" onClick={fetchUserGameRooms}>
+        <button className="btn btn-sm btn-outline text-white hover:border-white hover:bg-background hover:text-white" onClick={fetchUserGameRooms}>
             Refresh
           </button>
         <div className="dropdown dropdown-left z-50">
-          <div tabIndex={0} role="button" className="btn btn-sm h-8 btn-outline text-white hover:bg-background hover:text-white">Sort By</div>
+          <div tabIndex={0} role="button" className="btn btn-sm h-8 btn-outline hover:border-white text-white hover:bg-background hover:text-white">Sort By</div>
           <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
             <li>
               <button className='bg-transparent' onClick={() => setSortBy('waiting')}>Waiting</button>

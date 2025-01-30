@@ -4,6 +4,7 @@ import useOnlineGameStore from "@/store/online-game-store";
 import { GameRoomDocument } from "@/store/online-game-store";
 import { useAppKitAccount } from "@reown/appkit/react";
 import HowToPlay from "@/components/HowToPlay";
+import { toast } from 'react-toastify';
 
 
 export default function PlayerStatistics() {
@@ -11,7 +12,11 @@ export default function PlayerStatistics() {
   const [joinedRooms, setJoinedRooms] = useState<GameRoomDocument[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const {address} = useAppKitAccount()
+  const {address} = useAppKitAccount();
+
+  const compactHash = (hash: string) => {
+    return hash.slice(0, 7) + '...' + hash.slice(-5)
+  }
 
   const [statistics, setStatistics] = useState({
     totalBattles: 0,
@@ -64,7 +69,9 @@ export default function PlayerStatistics() {
       
       calculateStatistics(finishedRooms);
     } catch (error) {
-      console.error("Error fetching joined rooms:", error);
+      if (error instanceof Error) {
+        toast.error(`Error fetching joined rooms: ${error.message}`)
+      }
     } finally {
       setLoading(false);
     }
@@ -131,14 +138,14 @@ export default function PlayerStatistics() {
               <div>
                 <h3 className="font-semibold text-[18px] text-white">{didUserWin(room, address) ? 'Won' : 'Lost'}</h3>
                 <span className="text-white text-[13px]">
-                  vs <span className="text-secondary uppercase"> {Object.values(room.players)
+                  vs <span className="text-secondary uppercase !w-[150px] truncate ... overflow-hidden"> {compactHash(Object.values(room.players)
                           .find(player => player.wallet !== address)
-                          ?.wallet || 'Unknown'}</span>
+                          ?.wallet as string || '') || 'Unknown'}</span>
                 </span>
               </div>
             </div>
             <div className="text-right">
-              <span className="text-[13px] block text-secondary">
+              <span className={`text-[13px] block ${didUserWin(room, address) ? 'text-secondary' : 'text-accent'}`}>
                 {didUserWin(room, address) ? '+' : '-'}
                 <span>
                   {room.stakeDetails?.stakeAmount.toLocaleString()}<span>{room.stakeDetails?.symbol}</span>
