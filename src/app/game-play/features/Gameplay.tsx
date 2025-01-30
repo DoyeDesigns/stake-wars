@@ -43,13 +43,17 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const gameRoomId = roomId;
 
   useEffect(() => {
+    if (!isConnected) {
+      router.push('/wallet');
+    }
+    
     const unsubscribe = init(gameRoomId);
  
     return () => {
       unsubscribe();
       reset();
     };
-  }, [gameRoomId, init, reset]);
+  }, [gameRoomId, init, reset, isConnected]);
 
 
   useEffect(() => {
@@ -158,10 +162,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
     setShowDefenseModal(false);
     setLastAttackDetails({ ability: null, attackingPlayer: null });
 };
-
-if (isConnected === false) {
-    router.push('/wallet');
-  }
 
   return (
     <div className='bg-[url("/game-play-bg.png")] bg-cover bg-no-repeat h-full overflow-auto  pt-[15px] relative'>
