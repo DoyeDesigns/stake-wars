@@ -1,4 +1,4 @@
-# 🎮 Crypto Combat Arena: PvP Battle Game
+# 🎮 Stake Wars(A Crypto Combat Arena): PvP Battle Game
 
 ![Game Banner](/stake-wars.logo.png)
 
