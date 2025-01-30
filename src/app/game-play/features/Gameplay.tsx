@@ -14,6 +14,7 @@ import LostMessage from './LostMessage'
  import Image from 'next/image';
 import HowToPlay from '@/components/HowToPlay';
 import { useAppKitAccount } from '@reown/appkit/react';
+import ConnectButton from '@/components/ConnectButton';
 
 interface LastAttackDetails {
   ability: Ability | null;
@@ -36,7 +37,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [showLoser, setShowLoser] = useState(false);
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
-  const {address} = useAppKitAccount();
+  const {address, isConnected} = useAppKitAccount();
 
   const gameRoomId = roomId;
 
@@ -156,6 +157,16 @@ export default function Gameplay({roomId} : {roomId: string}) {
     setShowDefenseModal(false);
     setLastAttackDetails({ ability: null, attackingPlayer: null });
 };
+
+if (isConnected === false) {
+    return (
+      <div className="pt-4 h-screen overflow-auto bg-background flex justify-center items-center px-5">
+        <div>
+          <ConnectButton />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='bg-[url("/game-play-bg.png")] bg-cover bg-no-repeat h-full overflow-auto  pt-[15px] relative'>

@@ -116,7 +116,7 @@ function CreateGameMultiStepForm() {
       <div className="pt-4 h-screen overflow-auto bg-background flex justify-center items-center px-5">
         <div>
           {roomStakeDetails ? (
-            <div>Set Network to {roomStakeDetails.name} to join game</div>
+            <div className="text-white">Set Network to {roomStakeDetails.name} to join game</div>
           ) : (
             <></>
           )}
