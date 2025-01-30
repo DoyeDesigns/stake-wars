@@ -25,6 +25,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const {
     gameState,
     init,
+    reset
   } = useOnlineGameStore();
 
   const [showSkipDefenseButton, setShowSkipDefenseButton] = useState(false);
@@ -44,8 +45,10 @@ export default function Gameplay({roomId} : {roomId: string}) {
  
     return () => {
       unsubscribe();
+      reset();
     };
-  }, [gameRoomId, init]);
+  }, [gameRoomId, init, reset]);
+
 
   useEffect(() => {
     if (gameRoomId) {

@@ -28,27 +28,31 @@ A blockchain-based battling game where players stake SOL, choose unique characte
 ## 🎮 Gameplay Overview
 
 ### 🛡️ Setup Phase
-<div align="center">
-  <img src="/public/create-game.gif" alt="Logo" width="200"/>
-</div>
 
 1. **Wallet Connection**
    - Connect multi-chain wallet using Reown AppKit
    - Supported chains: Solana, Ethereum
+
+<div align="center">
+  <img src="/public/connect-wallet.gif" alt="Logo" width="200"/>
+</div>
+
 2. **Stake SOL**
-   ```typescript
-   interface StakeDetails {
-     stakeAmount: number;
-     symbol: "SOL";
-     networkId: string;
-   }
-   ```
+
+<div align="center">
+  <img src="/public/create-game.gif" alt="Logo" width="200"/>
+</div>
 
 ## ⚔️ Combat Phase
 The combat phase is where players engage in tactical battle using their chosen characters and dice rolls.
 
 ### 🔄 Turn Sequence
-![Combat Flow](/path/to/combat-flow.gif)
+<div align="center">
+  <div style="display: flex; justify-content: center; gap: 20px;">
+    <img src="/public/won.gif" alt="Create Game Demo" width="200"/>
+    <img src="/public/lost.gif" alt="Join Game Demo" width="200"/>
+  </div>
+</div>
 
 ```mermaid
 graph TD
@@ -61,13 +65,4 @@ graph TD
     E -->|Dodge| G[Player 1 Turn Again]
     E -->|Block| H[Reduce Damage]
     H --> I[Player 2 Turn]
-```
-
-## 🚀 Getting Started
-
-### 📥 Installation
-```bash
-git clone https://github.com/DoyeDesigns/stake-wars.git
-cd stake-wars
-npm install
 ```

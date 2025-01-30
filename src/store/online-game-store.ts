@@ -81,11 +81,28 @@ interface GameState {
   diceRolls?: {
     [key: string]: number;
   };
-}
+};
+
+const initialGameState: GameState = {
+  player1: {
+    id: null,
+    currentHealth: 0, 
+    defenseInventory: {} 
+  },
+  player2: {
+    id: null,
+    currentHealth: 0,
+    defenseInventory: {}
+  },
+  currentTurn: 'player1',
+  gameStatus: 'waiting',
+  winner: null,
+};
 
 interface OnlineGameStore {
   roomId: string | null;
   setRoomId: (roomId: string, address: string) => void;
+  reset: () => void,
   playerAddress: string | null;
   gameState: GameState;
   rollAndRecordDice: () => Promise<number>;
@@ -119,24 +136,9 @@ const useOnlineGameStore = create<OnlineGameStore>((set, get) => ({
       playerAddress: address
     });
   },
+  reset: () => set({ gameState: initialGameState, roomId: null }),
   playerAddress: null,
-  gameState: {
-    player1: {
-      id: null,
-      character: CHARACTERS[0],
-      currentHealth: CHARACTERS[0].baseHealth,
-      defenseInventory: {},
-    },
-    player2: {
-      id: null,
-      character: CHARACTERS[1],
-      currentHealth: CHARACTERS[1].baseHealth,
-      defenseInventory: {},
-    },
-    currentTurn: 'player1',
-    gameStatus: 'character-select',
-    winner: null,
-  },
+  gameState: initialGameState,
 
   rollAndRecordDice: async () => {
     const { roomId, playerAddress } = get();
@@ -470,33 +472,38 @@ checkDiceRollsAndSetTurn: async () => {
   init: (roomId) => {
     const roomRef = doc(db, 'gameRooms', roomId);
   
+    set((state) => ({
+      ...state,
+      roomId,
+    }));
+  
     const unsubscribe = onSnapshot(roomRef, (snapshot) => {
       const roomData = snapshot.data();
   
       set((state) => {
-        const newGameState = {
-          ...state.gameState,
-          player1: {
-            ...state.gameState.player1,
-            ...roomData?.gameState?.player1,
-            character: roomData?.gameState?.player1.character,
-          },
-          player2: {
-            ...state.gameState.player2,
-            ...roomData?.gameState.player2,
-            id: roomData?.gameState.player2.id || state.gameState.player2.id,
-            character: roomData?.gameState?.player2.character,
-          },
-          currentTurn: roomData?.gameState.currentTurn,
-          gameStatus: roomData?.gameState.gameStatus,
-          lastAttack: roomData?.gameState.lastAttack,
-          diceRolls: roomData?.gameState.diceRolls,
-          winner: roomData?.gameState.winner,
-          stakeDetails: roomData?.gameState.stakeDetails
-        };
+        if (state.roomId !== roomId) return state;
   
         return {
-          gameState: newGameState,
+          gameState: {
+            ...state.gameState,
+            player1: {
+              ...state.gameState.player1,
+              ...roomData?.gameState?.player1,
+              character: roomData?.gameState?.player1?.character,
+            },
+            player2: {
+              ...state.gameState.player2,
+              ...roomData?.gameState?.player2,
+              id: roomData?.gameState?.player2?.id || state.gameState.player2.id,
+              character: roomData?.gameState?.player2?.character,
+            },
+            currentTurn: roomData?.gameState?.currentTurn,
+            gameStatus: roomData?.gameState?.gameStatus,
+            lastAttack: roomData?.gameState?.lastAttack,
+            diceRolls: roomData?.gameState?.diceRolls,
+            winner: roomData?.gameState?.winner,
+            stakeDetails: roomData?.gameState?.stakeDetails,
+          },
           roomId,
         };
       });
