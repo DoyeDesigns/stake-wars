@@ -37,8 +37,10 @@ A blockchain-based battling game where players stake SOL, choose unique characte
      symbol: "SOL";
      networkId: string;
    }
+   ```
 
 ## ⚔️ Combat Phase
+The combat phase is where players engage in tactical battle using their chosen characters and dice rolls.
 
 ### 🔄 Turn Sequence
 ![Combat Flow](/path/to/combat-flow.gif)
@@ -53,6 +55,7 @@ graph TD
     E -->|Dodge| G[Player 1 Turn Again]
     E -->|Block| H[Reduce Damage]
     H --> I[Player 2 Turn]
+```
 
 ## 🚀 Getting Started
 
@@ -61,3 +64,4 @@ graph TD
 git clone https://github.com/DoyeDesigns/stake-wars.git
 cd stake-wars
 npm install
+```
