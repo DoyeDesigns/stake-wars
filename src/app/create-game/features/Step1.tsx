@@ -64,8 +64,7 @@ const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
         <input
           id="step1-input"
           type="number"
-          defaultValue={stakeDetails?.stakeAmount as number}
-          value={value as number}
+          value={stakeDetails ? stakeDetails?.stakeAmount : value as number}
           placeholder="Custom Stake"
           onChange={handleInputChange}
           className='bg-[#414141] rounded-[5px] h-12 w-full px-[25px] text-white'
