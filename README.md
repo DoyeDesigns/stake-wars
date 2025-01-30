@@ -27,10 +27,11 @@ A blockchain-based battling game where players stake SOL, choose unique characte
 
 ### 🛡️ Setup Phase
 ![Create Game](/path/to/create-game.gif)
-1. **Wallet Connection**  
+
+1. **Wallet Connection**
    - Connect multi-chain wallet using Reown AppKit
    - Supported chains: Solana, Ethereum
-2. **Stake SOL**  
+2. **Stake SOL**
    ```typescript
    interface StakeDetails {
      stakeAmount: number;
