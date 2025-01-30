@@ -4,6 +4,7 @@ import './globals.css';
 import ContextProvider from '@/context'
 import NavBar from "@/components/NavBar";
 import Script from "next/script";
+import { headers } from 'next/headers'
 import { ToastContainer } from 'react-toastify';
 
 export const metadata: Metadata = {
@@ -37,10 +38,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersData = await headers();
+  const cookies = headersData.get('cookie');
+
   return (
     <html lang="en">
       <body>
-        <ContextProvider>{children}</ContextProvider>
+        <ContextProvider cookies={cookies}>{children}</ContextProvider>
         <Script src="https://telegram.org/js/telegram-web-app.js?56" strategy="beforeInteractive"/>
         <NavBar />
         <ToastContainer autoClose={3000} />
