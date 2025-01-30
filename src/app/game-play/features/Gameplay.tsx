@@ -14,7 +14,7 @@ import LostMessage from './LostMessage'
  import Image from 'next/image';
 import HowToPlay from '@/components/HowToPlay';
 import { useAppKitAccount } from '@reown/appkit/react';
-import ConnectButton from '@/components/ConnectButton';
+import { useRouter } from 'next/navigation';
 
 interface LastAttackDetails {
   ability: Ability | null;
@@ -38,6 +38,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
   const {address, isConnected} = useAppKitAccount();
+  const router = useRouter()
 
   const gameRoomId = roomId;
 
@@ -159,13 +160,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
 };
 
 if (isConnected === false) {
-    return (
-      <div className="pt-4 h-screen overflow-auto bg-background flex justify-center items-center px-5">
-        <div>
-          <ConnectButton />
-        </div>
-      </div>
-    );
+    router.push('/wallet');
   }
 
   return (
