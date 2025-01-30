@@ -1,6 +1,6 @@
 # 🎮 Stake Wars(A Crypto Combat Arena): PvP Battle Game
 
-![Game Banner](./public/stake-wars.logo.png)
+![Game Banner](./public/stake-wars-logo.png)
 
 A blockchain-based battling game where players stake SOL, choose unique characters, and engage in dice-driven tactical combat on the Solana chain.
 
