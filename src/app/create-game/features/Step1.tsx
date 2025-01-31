@@ -64,6 +64,7 @@ const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
         <input
           id="step1-input"
           type="number"
+          min="0"
           value={stakeDetails ? stakeDetails?.stakeAmount : value as number}
           placeholder="Custom Stake"
           onChange={handleInputChange}
