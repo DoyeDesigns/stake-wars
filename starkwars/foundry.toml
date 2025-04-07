@@ -1,0 +1,14 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+
+[rpc_endpoints]
+monad = "https://testnet-rpc.monad.xyz"
+
+# If you need to set a specific chain ID for Monad testnet
+[profile.default.networks.monad]
+chain_id = 1337
