@@ -43,6 +43,8 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const {address, isConnected} = useAppKitAccount();
   const router = useRouter();
 
+  const { writeContractAsync } = useWriteContract();
+
   const gameRoomId = roomId;
 
   useEffect(() => {
@@ -76,6 +78,21 @@ export default function Gameplay({roomId} : {roomId: string}) {
     }
   })
 
+  async function claimPot() {
+    try {
+      const claimPotHash = await writeContractAsync({
+        ...wagmiStarkWarsContractConfig,
+        functionName: "claimPot",
+        args: [roomId],
+      });
+      if (claimPotHash) {
+        toast.success(`JoinPot Transaction Succesful! hash: ${claimPotHash}`);
+      }
+    } catch (error) {
+      toast.error(`Error joining pot: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      return;
+    } 
+  }
 
   useEffect(() =>{
     if (gameState.winner === 'player1' || gameState.winner === 'player2' && gameState.gameStatus === 'finished') {
@@ -83,6 +100,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
       if (address === gameState[gameState?.winner]?.id) {
         autoAssignWinner(roomId, address);
         setShowWinner(true);
+        claimPot();
       } else {
         setShowLoser(true);
       }
@@ -204,7 +222,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
         </div>
       </div>
       <div className="absolute h-vh top-0 w-full">
-        {showWinner && WonMessage(stakeDetails as StakeDetails, roomId)}
+        {showWinner && <WonMessage {...stakeDetails as StakeDetails}/>}
         {showLoser && <LostMessage {...stakeDetails as StakeDetails}/>}
         {showDefenseModal && defendingPlayer === gameState.currentTurn && (
         <DefenseModal

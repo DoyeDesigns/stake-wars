@@ -6,36 +6,16 @@ import { useState } from "react";
 import ExitGame from "./ExitGame";
 import { useRouter } from "next/navigation";
 import { StakeDetails } from "@/store/online-game-store";
-import { wagmiStarkWarsContractConfig } from "@/lib/contract";
-import { toast } from "react-toastify";
 
 
 
-export default function WonMessage(stakeDetails: StakeDetails, roomId: string) {
+export default function WonMessage(stakeDetails: StakeDetails) {
   const [showExitOptions, setShowExitOptions] = useState(false);
   const router = useRouter();
-
-  const { writeContractAsync } = useWriteContract();
 
   const handleExitOptions = () => {
     setShowExitOptions((prev) => !prev);
   };
-
-   const claimPot = async () => {
-      try {
-        const claimPotHash = await writeContractAsync({
-          ...wagmiStarkWarsContractConfig,
-          functionName: "claimPot",
-          args: [roomId],
-        });
-        if (claimPotHash) {
-          toast.success(`JoinPot Transaction Succesful! hash: ${claimPotHash}`);
-        }
-      } catch (error) {
-        toast.error(`Error joining pot: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        return;
-      } 
-    }
 
   return (
     <div className="bg-[#191919]/60 h-full w-full top-0 left-0">
@@ -63,8 +43,14 @@ export default function WonMessage(stakeDetails: StakeDetails, roomId: string) {
                 {(stakeDetails.stakeAmount * 2).toLocaleString()}{stakeDetails.symbol}
               </span>
             </div>
-            <button onClick={() => claimPot()} className="btn border-none gradient-tracker bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]">
-              Claim Pot
+            <button className="btn border-none bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]">
+              <Image
+                src="/telegram-share.png"
+                alt="winner-bg"
+                width={24}
+                height={24}
+              />{" "}
+              Tell your friends
             </button>
             <button onClick={() => router.push('/create-game')} className="btn border-none bg-white text-primary font-bold text-[12px] w-[190px] rounded-[10px]">
               <Image
@@ -88,7 +74,3 @@ export default function WonMessage(stakeDetails: StakeDetails, roomId: string) {
     </div>
   );
 }
-function useWriteContract(): { writeContractAsync: any; } {
-  throw new Error("Function not implemented.");
-}
-
