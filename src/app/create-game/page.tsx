@@ -128,15 +128,6 @@ async function getRoomStakeDetails(roomId: string) {
     );
 
     try {
-      setRoomId(newRoomId);
-      selectCharacters(
-        newRoomId,
-        formData?.option?.id as string,
-        address as string
-      );
-
-      console.log("Amount", formData?.amount);
-
       const createPotHash = await writeContractAsync({
         ...wagmiStarkWarsContractConfig,
         functionName: "createPot",
@@ -148,6 +139,13 @@ async function getRoomStakeDetails(roomId: string) {
           `CreatePot Transaction Successful! hash: ${createPotHash}`
         );
       }
+
+      setRoomId(newRoomId);
+      selectCharacters(
+        newRoomId,
+        formData?.option?.id as string,
+        address as string
+      );
     } catch (error) {
       toast.error(`Error creating game room: ${error}`);
       return;
@@ -158,18 +156,13 @@ async function getRoomStakeDetails(roomId: string) {
 
   async function joinActiveGameRoom(roomId: string) {
     const formData = {
-      amount: step1Value,
+      amount: step1Value as number,
       option: selectedCharacter,
     };
 
-    try {
-      joinGameRoom(roomId, address as string);
-      selectCharacters(
-        roomId,
-        formData?.option?.id as string,
-        address as string
-      );
+    console.log(step1Value)
 
+    try {
       const joinPotHash = await writeContractAsync({
         ...wagmiStarkWarsContractConfig,
         functionName: "joinPot",
@@ -178,6 +171,13 @@ async function getRoomStakeDetails(roomId: string) {
       if (joinPotHash) {
         toast.success(`JoinPot Transaction Succesful! hash: ${joinPotHash}`);
       }
+
+      joinGameRoom(roomId, address as string);
+      selectCharacters(
+        roomId,
+        formData?.option?.id as string,
+        address as string
+      );
     } catch (error) {
       toast.error(`Error joining game room: ${error}`);
       return;
