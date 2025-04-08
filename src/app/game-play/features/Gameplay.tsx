@@ -15,7 +15,7 @@ import LostMessage from './LostMessage'
 import HowToPlay from '@/components/HowToPlay';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useRouter } from 'next/navigation';
-import { autoAssignWinner } from '@/config/game-bot';
+import { autoAssignWinner } from '../../../config/game-bot';
 import { wagmiStarkWarsContractConfig } from '@/lib/contract';
 import { useWriteContract } from 'wagmi';
 
