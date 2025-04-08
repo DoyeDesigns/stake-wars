@@ -10,7 +10,7 @@ interface Step1Props {
   stakeDetails: StakeDetails | null;
 }
 
-const tokenAmounts = [0.5, 1, 2, 5, 7];
+const tokenAmounts = [1000, 2000, 3000, 5000, 7000, 10000, 15000, 20000, 30000, 50000, 100000];
 
 const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
   const handlePresetClick = (amount: number) => {
@@ -38,13 +38,13 @@ const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
       </div>
       <div className='flex items-center justify-between mb-5 w-full'>
       <h1 className='font-bold text-[19px] text-white text-center'>Stake {caipNetwork?.nativeCurrency?.symbol}</h1>
-      <HowToPlay iconSize={12} textSize='text-sm' />
+      <HowToPlay iconSize={16} textSize='text-sm' />
       </div>
 
       <div className='w-[350px] rounded-[10px] bg-[#1A1A1A] h-fit border border-[#3B3B3B] px-6 pt-[18px] pb-[35px]'>
       <div className='flex items-center justify-between mb-7'>
         <span className='text-white text-[15px]'>Select {caipNetwork?.nativeCurrency?.symbol} Amount</span>
-        <span className='bg-white rounded-[7px] h-[38px] px-[10px] inline-flex justify-center items-center text-primary font-extrabold text-[15px]'>{caipNetwork?.nativeCurrency?.symbol}</span>
+        <span className={`bg-white rounded-[7px] h-[38px] px-[10px] inline-flex justify-center items-center ${caipNetwork?.nativeCurrency?.symbol === 'MON' ? 'text-white bg-gradient-to-b from-[#6832AE] to-[#9747FF]' : 'text-primary font-extrabold'} text-[15px]`}>{caipNetwork?.nativeCurrency?.symbol === 'MON' ? 'Monad Testnet' : caipNetwork?.nativeCurrency?.symbol}</span>
       </div>
 
       <div className='flex flex-wrap gap-2 mb-[30px]'>
@@ -52,15 +52,15 @@ const Step1: React.FC<Step1Props> = ({ value, onChange, stakeDetails }) => {
           <button
             key={amount}
             onClick={() => handlePresetClick(amount)}
-            className={`${amount === value ? 'bg-[#FEC805] text-black' : 'bg-[#414141] text-white'} px-4 !rounded-[8px] h-[34px] text[15px] w-fit`}
+            className={`${amount === value ? 'bg-[#9747FF] text-white' : 'bg-[#414141] text-white'} px-4 !rounded-[8px] h-[34px] text[15px] w-fit`}
           >
             {amount.toLocaleString()}
           </button>
         ))}
       </div>
 
-      <div>
-        {stakeDetails?.stakeAmount && (<span className='text-white !mb-2'>You must stake same amount as game creator {stakeDetails?.stakeAmount} {stakeDetails.symbol} ({stakeDetails.name})</span>)}
+      <div className='relative'>
+        {stakeDetails?.stakeAmount && (<span className='text-white text-xs !mb-1'>You must stake same amount as game creator {stakeDetails?.stakeAmount} {stakeDetails.symbol} ({stakeDetails.name})</span>)}
         <input
           id="step1-input"
           type="number"

@@ -33,7 +33,7 @@ const UserGameRooms = () => {
 
   useEffect(() => {
     fetchUserGameRooms();
-  }, [findUserRooms]);
+  }, [address]);
   
 
   const handleJoinRoom = async (roomId: string) => {

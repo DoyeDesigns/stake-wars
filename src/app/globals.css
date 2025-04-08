@@ -21,6 +21,10 @@
   @apply bg-primary border;
 }
 
+.gradient-tracker {
+  @apply bg-gradient-to-r from-[#8119FF] to-[#F76217];
+}
+
 /* Reverse Progress Bar */
 .progress-reverse {
   transform: scaleX(-1); /* Flip the progress bar */

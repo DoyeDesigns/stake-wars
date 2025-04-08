@@ -5,7 +5,7 @@ import Step1 from "./features/Step1";
 import Step2 from "./features/Step2";
 import Image from "next/image";
 import Link from "next/link";
-import Step3 from './features/Step3';
+import Step3 from "./features/Step3";
 import { useRouter } from "next/navigation";
 import { Character } from "@/lib/characters";
 import useOnlineGameStore from "@/store/online-game-store";
@@ -14,41 +14,72 @@ import { Suspense } from "react";
 import { StakeDetails } from "@/store/online-game-store";
 import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
 import ConnectButton from "@/components/ConnectButton";
+import {
+  useWaitForTransactionReceipt,
+  useWriteContract,
+  usePublicClient,
+} from "wagmi";
+import {
+  wagmiContractConfig,
+  wagmiStarkWarsContractConfig,
+} from "@/lib/contract";
+import { toast } from "react-toastify";
 
 function CreateGameMultiStepForm() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [step1Value, setStep1Value] = useState<number | null>(null);
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
-  const [roomStakeDetails, setRoomStakeDetails] = useState<StakeDetails | null>(null);
-  const [roomId, setRoomId] = useState('');
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
+    null
+  );
+  const [roomStakeDetails, setRoomStakeDetails] = useState<StakeDetails | null>(
+    null
+  );
+  const [roomId, setRoomId] = useState("");
   const [roomToJoinId, setRoomToJoinId] = useState<string | null>(null);
-  const { createOnlineGameRoom, joinGameRoom, selectCharacters, getStakeDetails } = useOnlineGameStore();
+  const {
+    createOnlineGameRoom,
+    joinGameRoom,
+    selectCharacters,
+    getStakeDetails,
+  } = useOnlineGameStore();
 
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
+  const { data: hash, isPending, writeContractAsync } = useWriteContract();
+
+  const { isLoading: isConfirming } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const searchParams = useSearchParams();
-  const roomIdToJoin = searchParams.get('gid');
 
-  useEffect(() => {
-    if (roomIdToJoin) {
-      setRoomToJoinId(roomIdToJoin);
-    }
-  }, [roomIdToJoin]);
-
-  async function getRoomStakeDetails() {
-    if (roomToJoinId) {
-      const data = await getStakeDetails(roomToJoinId);
-      setRoomStakeDetails(data as StakeDetails);
-    }
+useEffect(() => {
+  const gid = searchParams.get("gid");
+  if (gid) {
+    setRoomToJoinId(gid);
   }
+}, [searchParams]);
 
-  useEffect(() => {
-    if (roomToJoinId) {
-      getRoomStakeDetails();
-    }
-  }, [roomToJoinId]);
+useEffect(() => {
+  if (roomToJoinId) {
+    getRoomStakeDetails(roomToJoinId);
+  }
+}, [roomToJoinId]);
+
+async function getRoomStakeDetails(roomId: string) {
+  try {
+    const data = await getStakeDetails(roomId);
+    console.log("Fetched stake details:", data);
+    if (!data) throw new Error('No stake details found');
+    
+    setRoomStakeDetails(data);
+    setStep1Value(data.stakeAmount);
+  } catch (error) {
+    console.error("Error fetching stake details:", error);
+    toast.error(`Error loading game room: ${error instanceof Error ? error.message : error}`);
+  }
+}
 
   const stakeDetails: StakeDetails = {
     name: caipNetwork?.name as string,
@@ -57,33 +88,100 @@ function CreateGameMultiStepForm() {
     networkId: caipNetwork?.id as string,
   };
 
-  const handleNext = () => setCurrentStep((prev) => prev + 1);
-  const handleBack = () =>
-    setCurrentStep((prev) => (prev <= 0 || prev === 1 ? 1 : prev - 1));
+  const handleNext = async () => {
+    try {
+      if (currentStep < 2) {
+        const data = await approveContract(step1Value as number);
+        if (!data) throw new Error('Approval transaction failed');
+        
+        toast.success(`Approval Transaction Successful! hash: ${data}`);
+        setCurrentStep((prev) => prev + 1);
+      } else {
+        setCurrentStep((prev) => prev + 1);
+      }
+    } catch (error) {
+      toast.error(`Error in approval process`);
+      throw error;
+    }
+  };
+
+  const handleBack = () => setCurrentStep((prev) => (prev <= 0 || prev === 1 ? 1 : prev - 1));
+
+  const approveContract = async (amount: number) => {
+    const approveHash = await writeContractAsync({
+      ...wagmiContractConfig,
+      functionName: 'approve',
+      args: ['0x275Ec395A7857B6D06b1b1DC08C61A28Fc95E74f', BigInt(amount)],
+    });
+    return approveHash;
+  };
 
   const handleSubmit = async () => {
     const formData = {
       amount: step1Value,
       option: selectedCharacter,
     };
-    const newRoomId = await createOnlineGameRoom(address as string, stakeDetails);
-    setRoomId(newRoomId);
-    selectCharacters(newRoomId, formData?.option?.id as string, address as string);
+
+    const newRoomId = await createOnlineGameRoom(
+      address as string,
+      stakeDetails
+    );
+
+    try {
+      setRoomId(newRoomId);
+      selectCharacters(
+        newRoomId,
+        formData?.option?.id as string,
+        address as string
+      );
+
+      console.log("Amount", formData?.amount);
+
+      const createPotHash = await writeContractAsync({
+        ...wagmiStarkWarsContractConfig,
+        functionName: "createPot",
+        args: [`${newRoomId}`, BigInt(formData.amount as number)],
+      });
+
+      if (createPotHash) {
+        toast.success(
+          `CreatePot Transaction Successful! hash: ${createPotHash}`
+        );
+      }
+    } catch (error) {
+      toast.error(`Error creating game room: ${error}`);
+      return;
+    }
+
     handleNext();
   };
 
-  const setStake = () => {
-    handleNext();
-  };
-
-  function joinActiveGameRoom(roomId: string) {
+  async function joinActiveGameRoom(roomId: string) {
     const formData = {
       amount: step1Value,
       option: selectedCharacter,
     };
 
-    joinGameRoom(roomId, address as string);
-    selectCharacters(roomId, formData?.option?.id as string, address as string);
+    try {
+      joinGameRoom(roomId, address as string);
+      selectCharacters(
+        roomId,
+        formData?.option?.id as string,
+        address as string
+      );
+
+      const joinPotHash = await writeContractAsync({
+        ...wagmiStarkWarsContractConfig,
+        functionName: "joinPot",
+        args: [`${roomId as string}`],
+      });
+      if (joinPotHash) {
+        toast.success(`JoinPot Transaction Succesful! hash: ${joinPotHash}`);
+      }
+    } catch (error) {
+      toast.error(`Error joining game room: ${error}`);
+      return;
+    }
     router.push(`/game-play/${roomId}`);
   }
 
@@ -91,19 +189,19 @@ function CreateGameMultiStepForm() {
     if (roomToJoinId === null) {
       return (
         <button
-          className="bg-primary border-none disabled:!text-white/50 hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+          className="gradient-tracker border-none disabled:!text-white/50 hover:gradient-tracker hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
           onClick={handleSubmit}
-          disabled={!selectedCharacter}
+          disabled={!selectedCharacter || isPending || isConfirming}
         >
-          Next
+          Create game
         </button>
       );
     } else {
       return (
         <button
-          className="bg-primary border-none disabled:!text-white/50 hover:bg-primary hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+          className="gradient-tracker border-none disabled:!text-white/50 hover:gradient-tracker hover:text-white btn text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
           onClick={() => joinActiveGameRoom(roomToJoinId)}
-          disabled={!selectedCharacter}
+          disabled={!selectedCharacter || isPending || isConfirming}
         >
           Join game
         </button>
@@ -116,7 +214,9 @@ function CreateGameMultiStepForm() {
       <div className="pt-4 h-screen overflow-auto bg-background flex justify-center items-center px-5">
         <div>
           {roomStakeDetails ? (
-            <div className="text-white">Set Network to {roomStakeDetails.name} to join game</div>
+            <div className="text-white">
+              Set Network to {roomStakeDetails.name} to join game
+            </div>
           ) : (
             <></>
           )}
@@ -133,7 +233,10 @@ function CreateGameMultiStepForm() {
           <></>
         ) : (
           <div className="relative">
-            <button onClick={handleBack} className="absolute p-0 bg-transparent top-0 left-0">
+            <button
+              onClick={handleBack}
+              className="absolute p-0 bg-transparent top-0 left-0"
+            >
               {currentStep === 1 ? (
                 <Link href="/play">
                   <Image
@@ -156,11 +259,18 @@ function CreateGameMultiStepForm() {
         )}
         {currentStep === 1 && (
           <div>
-            <Step1 value={step1Value} onChange={setStep1Value} stakeDetails={roomStakeDetails} />
+            <Step1
+              value={step1Value}
+              onChange={setStep1Value}
+              stakeDetails={roomStakeDetails}
+            />
           </div>
         )}
         {currentStep === 2 && (
-          <Step2 selectedItem={selectedCharacter} onSelect={setSelectedCharacter} />
+          <Step2
+            selectedItem={selectedCharacter}
+            onSelect={setSelectedCharacter}
+          />
         )}
         {currentStep === 3 && <Step3 roomId={roomId} />}
       </div>
@@ -168,11 +278,11 @@ function CreateGameMultiStepForm() {
       <div className="flex justify-center pb-[130px]">
         {currentStep < 2 && (
           <button
-            className="bg-primary border-none hover:bg-primary hover:text-white btn disabled:!text-white/50 text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
-            onClick={() => setStake()}
-            disabled={currentStep === 1 && !step1Value}
+            className="gradient-tracker border-none hover:gradient-tracker hover:text-white btn disabled:!text-white/50 text-white h-12 !rounded-[5px] w-[349px] mt-[35px]"
+            onClick={() => handleNext()}
+            disabled={!step1Value || isPending || isConfirming}
           >
-            Set Stake
+            Approve
           </button>
         )}
         {currentStep === 2 && (
@@ -184,7 +294,7 @@ function CreateGameMultiStepForm() {
           <button
             className="bg-white btn font-bold hover:text-primary text-primary hover:bg-white h-12 !rounded-[5px] w-fit px-3 mt-[35px]"
             disabled={!selectedCharacter}
-            onClick={() => router.push('/play')}
+            onClick={() => router.push("/play")}
           >
             View game details
           </button>

@@ -96,8 +96,8 @@ export default function HowToPlay({ iconSize = 24, textSize = "text-base" }: How
           }
         }}
       >
-        <Image src="/green-info.png" alt="info" width={iconSize} height={iconSize} />
-        <span className="underline mb-1 ml-1">How to play</span>
+        <Image src="/proicons_info.png" alt="info" width={iconSize} height={iconSize} />
+        <span className="underline mb-1 ml-1 text-white">How to play</span>
       </button>
 
       <dialog id="my_modal_3" className="modal">

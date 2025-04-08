@@ -5,13 +5,22 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
-import { solana } from '@reown/appkit/networks'
+import { mainnet, solana } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient();
 
 if (!projectId) {
   throw new Error('Project ID is not defined')
 }
+
+// Then pass it to the AppKit
+// createAppKit({
+//     adapters: [...],
+//     networks: [customNetwork],
+//     chainImages: { // Customize networks' logos
+//       123456789: '/custom-network-logo.png', // <chainId>: 'www.network.com/logo.png'
+//     }
+// })
 
 const metadata = {
   name: 'Stake Wars',
@@ -23,7 +32,7 @@ const metadata = {
 export const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   projectId,
-  defaultNetwork: solana,
+  defaultNetwork: mainnet,
   networks,
   metadata,
   featuredWalletIds: [
@@ -36,8 +45,8 @@ export const modal = createAppKit({
     analytics: true,
     onramp: true
   },
-  themeVariables: {
-    '--w3m-accent': '#ffffff',
+  chainImages: {
+    10143: '/monad.jpg',
   }
 })
 

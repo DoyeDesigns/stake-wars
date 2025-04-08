@@ -18,8 +18,8 @@ function Step2(props: Step2Props) {
           <div
             key={item.name} 
             onClick={() => onSelect(item)}
-            className={`bg-[#090909] rounded-[10px] relative flex relative items-center justify-between h-[103px] p-4 cursor-pointer ${
-              selectedItem?.name === item.name ? 'border-[3px] border-[#FFCE31]' : ''
+            className={`bg-[#090909] rounded-[10px] flex relative items-center justify-between h-[103px] p-4 cursor-pointer ${
+              selectedItem?.name === item.name ? 'border-[3px] border-[#9747FF]' : ''
             }`}
           >
               {selectedItem?.name === item.name && (<Image className='absolute -right-2 -top-2 z-50' src='/check-icon.png' alt='check' height={27} width={27}/>)}

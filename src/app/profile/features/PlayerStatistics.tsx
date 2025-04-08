@@ -5,6 +5,7 @@ import { GameRoomDocument } from "@/store/online-game-store";
 import { useAppKitAccount } from "@reown/appkit/react";
 import HowToPlay from "@/components/HowToPlay";
 import { toast } from 'react-toastify';
+import { useAppKitNetwork } from "@reown/appkit/react";
 
 
 export default function PlayerStatistics() {
@@ -13,6 +14,7 @@ export default function PlayerStatistics() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const {address} = useAppKitAccount();
+  const { caipNetwork } = useAppKitNetwork();
 
   const compactHash = (hash: string) => {
     return hash.slice(0, 7) + '...' + hash.slice(-5)
@@ -98,9 +100,9 @@ export default function PlayerStatistics() {
             <div className="flex gap-10 justify-center items-center pt-7 pb-6">
         <div className="flex flex-col">
           <h1 className="font-bold text-[16px] text-white mb-2">
-          {statistics.totalEarnings.toLocaleString()} <span>SOL</span>
+          <span className="flex">{statistics.totalEarnings.toLocaleString()} {caipNetwork?.nativeCurrency?.symbol}{caipNetwork?.nativeCurrency?.symbol === 'MON' ? <Image src={"/monad-small-logo.png"} alt={"monad-small-logo"} width={24} height={20} /> : <></>}</span>
           </h1>
-          <span className="font-normal text-[15px] text-secondary">
+          <span className="font-normal text-[15px] text-white">
             Total Earned
           </span>
         </div>
@@ -124,7 +126,7 @@ export default function PlayerStatistics() {
         </button>
       </div>
       <div className="h-px bg-[#6A6868]"></div>
-      <div className="flex justify-center my-[17px]"><HowToPlay iconSize={12} textSize="text-sm" /></div>
+      <div className="flex justify-end my-[17px] w-[350px] mx-auto"><HowToPlay iconSize={16} textSize="text-sm" /></div>
       <div className="flex flex-col items-center pb-[150px] overflow-auto pt-[18px] gap-[6px]">
         {joinedRooms.map((room) => (
             <div key={room.id} className="bg-[#393939] h-[66px] rounded-[10px] flex justify-between items-center w-[364px] min-w-[250px] pr-[18px] pl-8 mx-2">
@@ -144,13 +146,12 @@ export default function PlayerStatistics() {
                 </span>
               </div>
             </div>
-            <div className="text-right">
-              <span className={`text-[13px] block ${didUserWin(room, address) ? 'text-secondary' : 'text-accent'}`}>
-                {didUserWin(room, address) ? '+' : '-'}
-                <span>
-                  {room.stakeDetails?.stakeAmount.toLocaleString()}<span>{room.stakeDetails?.symbol}</span>
+            <div>
+              <div className="flex justify-end items-center">
+                <span className={`text-[13px] flex ${didUserWin(room, address) ? 'text-secondary' : 'text-accent'}`}>
+                    <span className="pt-[2px] mr-1">{didUserWin(room, address) ? '+' : '-'} {room.stakeDetails?.stakeAmount.toLocaleString()} {room.stakeDetails?.symbol}</span> {caipNetwork?.nativeCurrency?.symbol === 'MON' ? <Image src={"/monad-small-logo.png"} alt={"monad-small-logo"} width={24} height={20} /> : <></>}
                 </span>
-              </span>
+              </div>
               <div>
                 <span className="text-[11px] text-white">
                 {new Date(room.createdAt.toDate()).toLocaleString()}
