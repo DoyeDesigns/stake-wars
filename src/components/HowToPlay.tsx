@@ -5,9 +5,12 @@ import Image from 'next/image';
 interface HowToPlayProps {
   iconSize?: number;
   textSize?: string;
+  color?: string;
 }
 
-export default function HowToPlay({ iconSize = 24, textSize = "text-base" }: HowToPlayProps) {
+type colorType = 'black' | 'white' | '';
+
+export default function HowToPlay({ iconSize = 24, textSize = "text-base", color = '' as colorType }: HowToPlayProps) {
   const [currentPage, setCurrentPage] = useState(0);
 
   const pages = [
@@ -97,7 +100,7 @@ export default function HowToPlay({ iconSize = 24, textSize = "text-base" }: How
         }}
       >
         <Image src="/proicons_info.png" alt="info" width={iconSize} height={iconSize} />
-        <span className="underline mb-1 ml-1 text-white">How to play</span>
+        <span className={`underline mb-1 ml-1 ${color === 'white' || color === '' ? 'text-white' : 'text-primary'}`}>How to play</span>
       </button>
 
       <dialog id="my_modal_3" className="modal">
