@@ -21,7 +21,7 @@ export default function WonMessage(stakeDetails: StakeDetails, roomId: string) {
     setShowExitOptions((prev) => !prev);
   };
 
-  async function claimPot() {
+   const claimPot = async () => {
       try {
         const claimPotHash = await writeContractAsync({
           ...wagmiStarkWarsContractConfig,
