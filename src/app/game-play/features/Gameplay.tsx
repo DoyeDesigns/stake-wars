@@ -43,8 +43,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const {address, isConnected} = useAppKitAccount();
   const router = useRouter();
 
-  const { writeContractAsync } = useWriteContract();
-
   const gameRoomId = roomId;
 
   useEffect(() => {
@@ -78,21 +76,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
     }
   })
 
-  async function claimPot() {
-    try {
-      const claimPotHash = await writeContractAsync({
-        ...wagmiStarkWarsContractConfig,
-        functionName: "claimPot",
-        args: [roomId],
-      });
-      if (claimPotHash) {
-        toast.success(`JoinPot Transaction Succesful! hash: ${claimPotHash}`);
-      }
-    } catch (error) {
-      toast.error(`Error joining pot: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      return;
-    } 
-  }
 
   useEffect(() =>{
     if (gameState.winner === 'player1' || gameState.winner === 'player2' && gameState.gameStatus === 'finished') {
@@ -100,7 +83,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
       if (address === gameState[gameState?.winner]?.id) {
         autoAssignWinner(roomId, address);
         setShowWinner(true);
-        claimPot();
       } else {
         setShowLoser(true);
       }
@@ -211,7 +193,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
         </div>
       </div>
       <div className='flex justify-end my-2'>
-        <span className='p-2 rounded-[5px] bg-white'><HowToPlay iconSize={12} textSize='text-sm'/></span>
+        <span className='p-2 rounded-[5px] bg-white'><HowToPlay iconSize={12} textSize='text-sm' color='black'/></span>
       </div>
       <div className="flex flex-col justify-center items-center">
         <span className="text-[14px] rounded-[10px] font-extrabold w-[337px] text-center h-[37px] flex justify-center items-center text-white bg-[#5B2D0C]">
@@ -222,7 +204,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
         </div>
       </div>
       <div className="absolute h-vh top-0 w-full">
-        {showWinner && <WonMessage {...stakeDetails as StakeDetails}/>}
+        {showWinner && WonMessage(stakeDetails as StakeDetails, roomId)}
         {showLoser && <LostMessage {...stakeDetails as StakeDetails}/>}
         {showDefenseModal && defendingPlayer === gameState.currentTurn && (
         <DefenseModal
