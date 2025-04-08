@@ -47,7 +47,7 @@ export const autoAssignWinner = async (roomId: string, winnerAddress: string) =>
     return txHash;
   } catch (error) {
     console.error('Auto-assign failed:', error);
-    throw error;
+    return
   }
 };
 
