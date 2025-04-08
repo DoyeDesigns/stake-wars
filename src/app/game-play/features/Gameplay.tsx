@@ -83,7 +83,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
       const claimPotHash = await writeContractAsync({
         ...wagmiStarkWarsContractConfig,
         functionName: "claimPot",
-        args: ['3xNKSr3gHgwo6nKvgVx1'],
+        args: [roomId],
       });
       if (claimPotHash) {
         toast.success(`JoinPot Transaction Succesful! hash: ${claimPotHash}`);
