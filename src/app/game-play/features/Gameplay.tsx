@@ -15,6 +15,9 @@ import LostMessage from './LostMessage'
 import HowToPlay from '@/components/HowToPlay';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useRouter } from 'next/navigation';
+import { autoAssignWinner } from '@/config/game-bot';
+import { wagmiStarkWarsContractConfig } from '@/lib/contract';
+import { useWriteContract } from 'wagmi';
 
 interface LastAttackDetails {
   ability: Ability | null;
@@ -38,7 +41,9 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
   const {address, isConnected} = useAppKitAccount();
-  const router = useRouter()
+  const router = useRouter();
+
+  const { writeContractAsync } = useWriteContract();
 
   const gameRoomId = roomId;
 
@@ -73,11 +78,29 @@ export default function Gameplay({roomId} : {roomId: string}) {
     }
   })
 
-  useEffect(() => {
+  async function claimPot() {
+    try {
+      const claimPotHash = await writeContractAsync({
+        ...wagmiStarkWarsContractConfig,
+        functionName: "claimPot",
+        args: ['3xNKSr3gHgwo6nKvgVx1'],
+      });
+      if (claimPotHash) {
+        toast.success(`JoinPot Transaction Succesful! hash: ${claimPotHash}`);
+      }
+    } catch (error) {
+      toast.error(`Error joining pot: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      return;
+    } 
+  }
+
+  useEffect(() =>{
     if (gameState.winner === 'player1' || gameState.winner === 'player2' && gameState.gameStatus === 'finished') {
       toast.info(`${gameState.winner} has won the game`);
       if (address === gameState[gameState?.winner]?.id) {
-        setShowWinner(true); 
+        autoAssignWinner(roomId, address);
+        setShowWinner(true);
+        claimPot();
       } else {
         setShowLoser(true);
       }

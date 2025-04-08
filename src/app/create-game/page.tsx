@@ -160,8 +160,6 @@ async function getRoomStakeDetails(roomId: string) {
       option: selectedCharacter,
     };
 
-    console.log(step1Value)
-
     try {
       const joinPotHash = await writeContractAsync({
         ...wagmiStarkWarsContractConfig,

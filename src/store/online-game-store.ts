@@ -414,32 +414,33 @@ checkDiceRollsAndSetTurn: async () => {
     const roomData = roomSnap.data();
     const existingPlayers = roomData.players || {};
   
-    if (existingPlayers[playerAddress]) {
-      throw new Error('You are already participating in this game');
+    if (playerAddress === roomData.players[roomData.createdBy]?.wallet && roomData.players[roomData.createdBy]?.role === 'creator') {
+      set({
+        roomId,
+        playerAddress: playerAddress
+      });
+      return
+    } else if (playerAddress === existingPlayers?.[playerAddress]?.wallet && existingPlayers?.[playerAddress]?.role === 'challenger') {
+      set({
+        roomId,
+        playerAddress: playerAddress
+      });
+      return
+    } else {
+      await updateDoc(roomRef, {
+        [`players.${playerAddress}`]: {
+          characterId: null,
+          role: 'challenger',
+          wallet: playerAddress,
+          diceRoll: null,
+        },
+        status: 'character-select'
+      });
+      set({
+        roomId,
+        playerAddress: playerAddress
+      });
     }
-  
-    const hasExistingChallenger = Object.values(existingPlayers).some(
-      (player) => (player as GameRoomPlayer).role === 'challenger'
-    );
-  
-    if (hasExistingChallenger) {
-      throw new Error('This game already has a challenger');
-    }
-  
-    await updateDoc(roomRef, {
-      [`players.${playerAddress}`]: {
-        characterId: null,
-        role: 'challenger',
-        wallet: playerAddress,
-        diceRoll: null,
-      },
-      status: 'character-select'
-    });
-  
-    set({
-      roomId,
-      playerAddress: playerAddress
-    });
   },
 
   findOpenGameRoom: async (playerAddress: string) => {
