@@ -10,16 +10,31 @@ A blockchain-based battling game where players stake SOL, choose unique characte
 - **Multi-Chain Battles** 🔗  
   Powered by Reown AppKit multichain feature for seamless cross-chain interactions
 - **SOL Staking** 💰  
-  Risk SOL tokens to challenge opponents with 2x reward potential
+  Risk SOL/MON/ETH/vDOT tokens to challenge opponents with 2x reward potential
 - **Character System** 🦸  
-  4 unique characters with special abilities (Donald Pump, Vladmir Muffin, etc.)
+  4 unique characters with special abilities (Donald Pump, Vladimir Muffin, etc.)
 - **Dice-Based Strategy** 🎲  
   Dynamic combat system combining chance and skill
 - **Real-Time Firebase Sync** 🔥  
   Live battle tracking and game state management
 
+### Coming Soon
+
+- **NFT character minting**
+  One free character NFT on sign-up
+- **Polkadot integration**
+  Deploying the game smart Contract on Moonbeam parachain
+- **liquid staking**
+  Utilising liquid staked tokens as game fuel on Solana and Polkadot(Moonbeam)
+- **Simpleswap on-ramp**
+  Integrating a crypto on-ramp to enable cross-chain swaps
+- **In gam tokens as XP**
+  Rewarding active players with an ERC-20 token as game XP
+- **Discord community**
+  A Discord community for hosting guild events and community events, etc.
+  
 ## 🛠 Tech Stack
-- **Blockchain**: Reown AppKit (Multi-Chain), Solana Program Library
+- **Blockchain**: Reown AppKit (Multi-Chain),
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **Backend**: Firebase Firestore, Cloud Functions
 - **Auth**: AppKit Wallet Connection (EOA & Smart Accounts)
