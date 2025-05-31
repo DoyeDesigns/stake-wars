@@ -12,10 +12,8 @@ import OpponentPlayerHealth from './OpponentPlayerHealth';
 import WonMessage from './WonMessage'
 import LostMessage from './LostMessage'
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { autoAssignWinner } from '../../../config/game-bot';
-import { wagmiStarkWarsContractConfig } from '@/lib/contract';
-import { useWriteContract } from 'wagmi';
 
 interface LastAttackDetails {
   ability: Ability | null;
@@ -42,8 +40,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
 
   const {address, isConnected} = useAppKitAccount();
   const { open } = useAppKit();
-
-  const { writeContractAsync } = useWriteContract();
 
   const gameRoomId = roomId;
 

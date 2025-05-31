@@ -1,7 +1,7 @@
 import { cookieStorage, createStorage } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
-import { mainnet, solana, solanaDevnet, } from '@reown/appkit/networks'
+import { mainnet, solana } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { HuobiWalletAdapter, SolflareWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { defineChain } from '@reown/appkit/networks';
@@ -42,7 +42,7 @@ export const customNetwork = defineChain({
   testnet: true,
 })
 
-export const networks = [customNetwork] as [AppKitNetwork, ...AppKitNetwork[]]
+export const networks = [customNetwork, mainnet, solana] as [AppKitNetwork, ...AppKitNetwork[]]
 
 //Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({

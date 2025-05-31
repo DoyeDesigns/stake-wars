@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GameRoomDocument, GameRoomPlayer } from "@/store/online-game-store";
+import { GameRoomDocument } from "@/store/online-game-store";
 import useOnlineGameStore from "@/store/online-game-store";
 import { useRouter } from "next/navigation";
 import { useAppKitAccount } from "@reown/appkit/react";

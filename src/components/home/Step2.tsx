@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { StakeDetails } from '@/store/online-game-store';
-import { useAppKitNetwork, useAppKitAccount } from "@reown/appkit/react";
+import { useAppKitAccount } from "@reown/appkit/react";
 import { Character } from '@/lib/characters';
 import { wagmiContractConfig } from '@/lib/contract';
 import { toast } from 'react-toastify';
@@ -17,7 +17,7 @@ interface Step2Props {
   selectedCharacter: Character | null;
 }
 
-const tokenAmounts = [0.5, 1, 2, 5, 7, 10, 15, 20];
+const tokenAmounts = [0.5, 1, 2, 5, 7, 10, 15];
 
 const Step2: React.FC<Step2Props> = ({ value, onChange, stakeDetails, flowButton, selectedCharacter }) => {
   const handlePresetClick = (amount: number) => {
