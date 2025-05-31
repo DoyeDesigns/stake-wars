@@ -27,6 +27,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
     gameState,
     init,
     reset,
+    setRoomId
   } = useOnlineGameStore();
 
   const [showSkipDefenseButton, setShowSkipDefenseButton] = useState(false);
@@ -60,6 +61,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
 
   useEffect(() => {
     if (gameRoomId) {
+      setRoomId(gameRoomId, address as `0${string}`)
       const fetchData = async () => {
           try {
             const data = await useOnlineGameStore.getState().getStakeDetails(gameRoomId);
