@@ -3,7 +3,6 @@ import useOnlineGameStore from "@/store/online-game-store";
 import { GameRoomDocument } from "@/store/online-game-store";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { toast } from 'react-toastify';
-import { useAppKitNetwork } from "@reown/appkit/react";
 import { Button } from "./ui/button";
 import { MoonLoader } from "react-spinners";
 

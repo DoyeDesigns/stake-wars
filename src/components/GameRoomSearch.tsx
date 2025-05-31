@@ -42,7 +42,7 @@ const GameRoomSearch = () => {
         setGameRoom(null);
       }
     } catch (err) {
-      setError('Error searching for game room');
+      setError(`Error searching for game room. ${err}`);
     } finally {
       setLoading(false);
     }

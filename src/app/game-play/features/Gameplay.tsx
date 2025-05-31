@@ -41,8 +41,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
   const {address, isConnected} = useAppKitAccount();
-  const { open, close } = useAppKit();
-  const router = useRouter();
+  const { open } = useAppKit();
 
   const { writeContractAsync } = useWriteContract();
 
@@ -81,22 +80,6 @@ export default function Gameplay({roomId} : {roomId: string}) {
       fetchData();
     }
   }, [gameRoomId]);
-
-  async function claimPot() {
-    try {
-      const claimPotHash = await writeContractAsync({
-        ...wagmiStarkWarsContractConfig,
-        functionName: "claimPot",
-        args: [roomId],
-      });
-      if (claimPotHash) {
-        toast.success(`JoinPot Transaction Succesful! hash: ${claimPotHash}`);
-      }
-    } catch (error) {
-      toast.error(`Error joining pot: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      return;
-    } 
-  }
 
   useEffect(() =>{
     if (gameState.winner === 'player1' || gameState.winner === 'player2' && gameState.gameStatus === 'finished') {

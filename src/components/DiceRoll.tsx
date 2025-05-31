@@ -77,7 +77,7 @@ const DiceRoll: React.FC = () => {
         className={`bg-[#B91770] h-[40px] w-[230px] lg:w-[308px] cursor-pointer !rounded lg:h-[36px] text-black font-bold py-2 px-4 disabled:bg-accent/70 disabled:text-white`}
         onClick={handleRollDice}
       >
-       <img src="/dice.png" alt="dice" className='size-[16px]' /> Roll Dice
+       <img src="/dice.png" alt="dice" className='size-[16px]' /> Roll Dice <span className='hidden'>{rollNumber}</span>
       </Button>
     </div>
   );

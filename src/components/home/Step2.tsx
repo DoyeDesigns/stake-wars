@@ -23,8 +23,7 @@ const Step2: React.FC<Step2Props> = ({ value, onChange, stakeDetails, flowButton
   const handlePresetClick = (amount: number) => {
     onChange(amount);
   };
-    const [trxHash, setTrxHash] = useState<String | null>(null)
-    const { caipNetwork } = useAppKitNetwork();
+    const [trxHash, setTrxHash] = useState<string | null>(null)
     const { address } = useAppKitAccount();
     const { data: hash, writeContractAsync } = useWriteContract();
 
@@ -66,7 +65,7 @@ const Step2: React.FC<Step2Props> = ({ value, onChange, stakeDetails, flowButton
         
         toast.success(`Approval Transaction Successful! hash: ${data}`);
     } catch (error) {
-      toast.error(`Error in approval process`);
+      toast.error(`Error in approval process. ${error}`);
     }
   };
 

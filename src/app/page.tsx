@@ -39,7 +39,7 @@ export default function Home() {
   } = useOnlineGameStore();
 
   const router = useRouter();
-  const { address, isConnected } = useAppKitAccount();
+  const { address } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
   const { data: hash, isPending, writeContractAsync } = useWriteContract();
 
@@ -86,7 +86,7 @@ async function getRoomStakeDetails(roomId: string) {
     setCurrentStep((prev) => prev + 1);
   };
 
-  const handleBack = () => setCurrentStep((prev) => (prev <= 0 || prev === 1 ? 1 : prev - 1));
+  // const handleBack = () => setCurrentStep((prev) => (prev <= 0 || prev === 1 ? 1 : prev - 1));
 
   const handleSubmit = async () => {
     const formData = {

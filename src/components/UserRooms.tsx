@@ -8,8 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { compactHash } from "./ConnectButton";
@@ -41,7 +39,7 @@ const UserGameRooms = () => {
       );
       setGameRooms(filteredRooms || []);
     } catch (err) {
-      setError("Failed to load game rooms");
+      setError(`Failed to load game rooms. ${err}`);
     } finally {
       setLoading(false);
     }
@@ -55,7 +53,7 @@ const UserGameRooms = () => {
     try {
       await joinGameRoom(roomId, address as string);
     } catch (err) {
-      setError("Failed to join game room");
+      setError(`Failed to join game room. ${err}`);
     } finally {
       router.push(`/game-play/${roomId}`);
     }
@@ -69,13 +67,13 @@ const UserGameRooms = () => {
     ];
   };
 
-  const getUsernameById = (
-    players: { [address: string]: GameRoomPlayer },
-    userId: string
-  ): string => {
-    const player = players[userId];
-    return player?.wallet || "Unknown User";
-  };
+  // const getUsernameById = (
+  //   players: { [address: string]: GameRoomPlayer },
+  //   userId: string
+  // ): string => {
+  //   const player = players[userId];
+  //   return player?.wallet || "Unknown User";
+  // };
 
   return (
     <div className="w-full space-y-4 mt-10">
@@ -129,8 +127,9 @@ const UserGameRooms = () => {
         <p className="text-white text-center my-2">No game rooms found</p>
       )}
 
-      {sortedGameRooms().map((gameRoom) => (
+      {sortedGameRooms().map((gameRoom, index) => (
         <div
+        key={index}
           className={`bg-[#1D1D1D] border border-[#A2A2A2] text-white rounded-[10px]`}
         >
           <div className="p-5 h-fit">

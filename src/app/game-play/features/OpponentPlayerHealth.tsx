@@ -22,8 +22,6 @@ export default function OpponentPlayerHealth({ gameState }: {
     ? Math.max(0, Math.min(100, (opponentPlayer.currentHealth / (opponentPlayer.character?.baseHealth || 100)) * 100))
     : 0;
 
-    const compactAddress = compactHash(address || '');
-
   return (
     <div>
       <div className='bg-[#3F3F3F] bg-cover h-[71px] lg:h-[90px] rounded-[10px] flex justify-between gap-8 items-center px-6 w-full'>
