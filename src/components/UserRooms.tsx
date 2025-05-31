@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GameRoomDocument } from "@/store/online-game-store";
 import useOnlineGameStore from "@/store/online-game-store";
 import { useRouter } from "next/navigation";
-import { useAppKitAccount } from "@reown/appkit/react";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ const UserGameRooms = () => {
   const [sortBy, setSortBy] = useState<
     "waiting" | "inProgress" | "character-select" | null
   >('inProgress');
+  const { close } = useAppKit();
 
   const { joinGameRoom, findUserRooms } = useOnlineGameStore();
   const router = useRouter();
@@ -56,6 +57,7 @@ const UserGameRooms = () => {
       setError(`Failed to join game room. ${err}`);
     } finally {
       router.push(`/game-play/${roomId}`);
+      close();
     }
   };
 

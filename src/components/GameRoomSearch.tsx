@@ -9,12 +9,14 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { compactHash } from './ConnectButton';
 import { Label } from '@radix-ui/react-label';
+import { useAppKit } from '@reown/appkit/react';
 
 const GameRoomSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [gameRoom, setGameRoom] = useState<GameRoomDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { close } = useAppKit();
 
   const router = useRouter();
 
@@ -51,7 +53,7 @@ const GameRoomSearch = () => {
   const handleJoinRoom = async () => {
     if (!gameRoom) return;
       router.push(`/?gid=${gameRoom.id}`);
-      router.refresh();
+      close();
   };
 
   return (
