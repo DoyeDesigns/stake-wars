@@ -198,7 +198,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
       <div className="flex flex-col justify-center items-center">
         <PlayerHealth  gameState={gameState} />
       </div>
-      <div className={`absolute top-0 w-full ${showDefenseModal && defendingPlayer === gameState.currentTurn ? 'h-full' : ''}`}>
+      <div className={`absolute top-0 w-full ${showDefenseModal ? 'h-full' : ''}`}>
         {showWinner && <WonMessage stakeDetails={stakeDetails as StakeDetails} roomId={roomId}/>}
         {showLoser && <LostMessage {...stakeDetails as StakeDetails}/>}
         {showDefenseModal && defendingPlayer === gameState.currentTurn && (
