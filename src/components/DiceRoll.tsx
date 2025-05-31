@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import useOnlineGameStore from '@/store/online-game-store';
 import { toast } from 'react-toastify';
 import { useAppKitAccount } from '@reown/appkit/react';
+import { Button } from './ui/button';
 
 const DiceRoll: React.FC = () => {
   const { rollAndRecordDice, gameState, performAttack, addDefenseToInventory } =
@@ -47,7 +48,6 @@ const DiceRoll: React.FC = () => {
             }
           } else {
             performAttack(currentPlayer, ability);
-            toast(`⚔️ ${currentPlayer} attacked`)
           }
         }
       } else {
@@ -71,15 +71,14 @@ const DiceRoll: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center gap-5">
-      <button
+    <div>
+      <Button
         disabled={!isPlayerTurn || isButtonDisabled}
-        className={`bg-secondary text-black font-bold ${isPlayerTurn ? 'animate-pulse' : ''} py-2 px-4 rounded-xl disabled:bg-accent/70 disabled:text-white`}
+        className={`bg-[#B91770] h-[40px] w-[230px] lg:w-[308px] cursor-pointer !rounded lg:h-[36px] text-black font-bold py-2 px-4 disabled:bg-accent/70 disabled:text-white`}
         onClick={handleRollDice}
       >
-        Roll Dice
-      </button>
-      <p className='text-white text-[18px] font-bold'>{rollNumber}</p>
+       <img src="/dice.png" alt="dice" className='size-[16px]' /> Roll Dice
+      </Button>
     </div>
   );
 };

@@ -1,23 +1,40 @@
-'use client'
+"use client";
 
-import { useAppKit } from '@reown/appkit/react';
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import Image from 'next/image';
+import { useAppKit } from "@reown/appkit/react";
+import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
+import { Button } from "./ui/button";
 
 export const compactHash = (hash: string | null | undefined) => {
-  if (!hash || typeof hash !== 'string' || hash.length < 12) return '';
+  if (!hash || typeof hash !== "string" || hash.length < 12) return "";
   return `${hash.substring(0, 7)}...${hash.substring(hash.length - 5)}`;
-}
+};
 
 export default function ConnectButton() {
   const { open } = useAppKit();
-  const {address, isConnected} = useAppKitAccount();
-;
-  const compactAddress = compactHash(address || '');
+  const { address, isConnected } = useAppKitAccount();
+  const networkData = useAppKitNetwork();
+
+  const compactAddress = compactHash(address || "");
 
   return (
-    <div className="flex flex-col-reverse sm:flex-row items-center gap-2">
-      <button className='btn flex hover:rounded-xl hover:gradient-tracker items-center border-none gradient-tracker h-10 w-[201px] text-white font-bold' onClick={() => open()}><span className='flex items-center gap-2'><Image className='inline-block' src='/wallet.png' alt='wallet' width={20} height={20}/> {isConnected ? <span className='truncate ...'>{compactAddress}</span> : 'Connect Wallet'}</span></button>
+    <div>
+      {networkData.caipNetworkId !== "eip155:123456789" ? <Button
+        className="text-white border border-white connect-button-bg min-h-[42px] w-full lg:w-[145px] rounded-[7px] hover:cursor-pointer"
+        onClick={() =>open({ view: 'Networks', namespace: 'eip155' })}
+      >
+        Wrong Network
+      </Button> : <Button
+        className="text-white border border-white connect-button-bg min-h-[42px] w-full lg:w-[145px] rounded-[7px] hover:cursor-pointer"
+        onClick={() =>open()}
+      >
+        <span className="flex items-center gap-2">
+          { isConnected ? (
+            <span className="truncate ...">{compactAddress}</span>
+          ) : (
+            "Connect Wallet"
+          )}
+        </span>
+      </Button>}
     </div>
-  )
+  );
 }

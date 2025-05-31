@@ -1,9 +1,9 @@
 import { cookieStorage, createStorage } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
-import { mainnet, solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import { mainnet, solana, solanaDevnet, } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { HuobiWalletAdapter, SolflareWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { defineChain } from '@reown/appkit/networks';
 
 
@@ -55,7 +55,7 @@ export const wagmiAdapter = new WagmiAdapter({
 })
 
 export const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter(), new PhantomWalletAdapter()],
 })
 
 export const config = wagmiAdapter.wagmiConfig

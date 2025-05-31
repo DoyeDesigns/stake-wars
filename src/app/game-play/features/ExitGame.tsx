@@ -1,6 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 interface ExitGameProps {
     showExitOptions: boolean;
@@ -19,20 +19,20 @@ export default function ExitGame({showExitOptions, setShowExitOptions}: ExitGame
           <span className="text-white font-extrabold text-[22px] text-center w-[200px]">
             Are you sure you want to exit?
           </span>
-          <button onClick={() => handleClose()} className="btn font-bold text-primary bg-white border-none w-[195px] rounded-[5px]">
-            <Image
+          <Button onClick={() => handleClose()} className="btn font-bold text-primary bg-white border-none w-[195px] rounded-[5px]">
+            <img
               src="/arrow-back-orange.png"
               alt="go-back"
               width={16}
               height={16}
             />
             Back to game
-          </button>
+          </Button>
         </div>
       </div>
-      <button onClick={() => router.push('/play')} className="underline font-bold text-[18px] text-white">
+      <Button onClick={() => router.push('/play')} className="underline font-bold text-[18px] text-white">
         Exit anyway
-      </button>
+      </Button>
     </div>
   );
 }

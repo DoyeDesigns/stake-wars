@@ -2,18 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import useOnlineGameStore, { StakeDetails } from '@/store/online-game-store';
-import { Ability } from '@/lib/characters';
+import { Ability, CHARACTERS } from '@/lib/characters';
 import DiceRollToDetermineFirstTurn from '@/components/FirstTurnDiceRoll';
 import DiceRoll from '@/components/DiceRoll';
 import DefenseModal from '@/components/DefenceModal';
 import { toast } from 'react-toastify';
-import PlayerHealth, { OpponentPlayerHealth } from "./PlayerHealth";
-import PlayerAbility from './PlayerAbility';
+import PlayerHealth from "./PlayerHealth";
+import OpponentPlayerHealth from './OpponentPlayerHealth';
 import WonMessage from './WonMessage'
 import LostMessage from './LostMessage'
- import Image from 'next/image';
-import HowToPlay from '@/components/HowToPlay';
-import { useAppKitAccount } from '@reown/appkit/react';
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
 import { useRouter } from 'next/navigation';
 import { autoAssignWinner } from '../../../config/game-bot';
 import { wagmiStarkWarsContractConfig } from '@/lib/contract';
@@ -24,12 +22,14 @@ interface LastAttackDetails {
   attackingPlayer: 'player1' | 'player2' | null | undefined;
 }
 
+const diceImages = ['/one.png', '/two.png', '/three.png', '/four.png', '/five.png', '/six.png']
 
 export default function Gameplay({roomId} : {roomId: string}) {
   const {
     gameState,
     init,
-    reset
+    reset,
+    setRoomId
   } = useOnlineGameStore();
 
   const [showSkipDefenseButton, setShowSkipDefenseButton] = useState(false);
@@ -41,6 +41,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
   const [stakeDetails, setStakeDetails] = useState<StakeDetails | null>(null);
 
   const {address, isConnected} = useAppKitAccount();
+  const { open, close } = useAppKit();
   const router = useRouter();
 
   const { writeContractAsync } = useWriteContract();
@@ -49,7 +50,9 @@ export default function Gameplay({roomId} : {roomId: string}) {
 
   useEffect(() => {
     if (!isConnected) {
-      router.push('/wallet');
+      // router.push('/wallet');
+      open();
+      toast.info('Please connect your wallet to play the game');
     }
     
     const unsubscribe = init(gameRoomId);
@@ -63,6 +66,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
 
   useEffect(() => {
     if (gameRoomId) {
+      setRoomId(gameRoomId, address as string);
       const fetchData = async () => {
           try {
             const data = await useOnlineGameStore.getState().getStakeDetails(gameRoomId);
@@ -76,7 +80,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
     
       fetchData();
     }
-  })
+  }, [gameRoomId]);
 
   async function claimPot() {
     try {
@@ -102,7 +106,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
         if (assignWinnerHash) {
           toast.success(`Transaction Successful! hash: ${assignWinnerHash}`);
         }
-        claimPot();
+        // claimPot();
         setShowWinner(true);
       } else {
         setShowLoser(true);
@@ -115,13 +119,15 @@ export default function Gameplay({roomId} : {roomId: string}) {
     if (
       gameState.gameStatus === 'inProgress' &&
        gameState.lastAttack !== null &&
-      gameState.lastAttack?.ability?.type === 'attack' &&
+      // gameState.lastAttack?.ability?.type === 'attack' &&
       gameState.lastAttack?.attackingPlayer
     ) {
 
       setLastAttackDetails(gameState.lastAttack);
       setShowDefenseModal(false);
       setShowSkipDefenseButton(false);
+
+      toast(`⚔️ ${gameState.lastAttack.attackingPlayer} attacked with ${gameState.lastAttack.ability.name} for ${gameState.lastAttack.ability.value}} damage!`);
       
       const attackingPlayer = gameState.lastAttack.attackingPlayer;
       const defendingPlayer = attackingPlayer === 'player1' ? 'player2' : 'player1';
@@ -153,16 +159,18 @@ export default function Gameplay({roomId} : {roomId: string}) {
  
     if (defenseType === null) {
       useOnlineGameStore.getState().skipDefense(defendingPlayer, incomingDamage, ability);
-      toast.warn(`${defendingPlayer} took -${incomingDamage} damage from ${ability.name}`);
     } else {
-      const defenseAbility: Ability = {
-        id: `${defendingPlayer}-${defenseType}`,
-        name: defenseType,
-        defenseType: defenseType as 'dodge' | 'block' | 'reflect',
-        value: 0,
-        type: 'defense',
-        description: '',
-      };
+      const defendingCharacterId = useOnlineGameStore.getState().gameState?.[defendingPlayer]?.character?.id;
+      const defendingCharacter = CHARACTERS.find(char => char.id === defendingCharacterId);
+
+      const defenseAbility = defendingCharacter?.abilities.find(
+        a => a.type === 'defense' && a.defenseType === defenseType
+      );
+
+      if (!defenseAbility) {
+        toast.error(`Defense ability of type "${defenseType}" not found for ${defendingCharacterId}`);
+        return;
+      }
  
       const wasDefenseSuccessful = await useOnlineGameStore.getState().useDefense(
         defendingPlayer,
@@ -173,13 +181,13 @@ export default function Gameplay({roomId} : {roomId: string}) {
       if (wasDefenseSuccessful) {
         switch (defenseType) {
           case 'dodge':
-            toast.info(`${defendingPlayer} dodged the attack`);
+            toast.info(`${defendingPlayer} dodged the attack with ${defenseAbility.name}`);
             break;
           case 'block':
-            toast.info(`${defendingPlayer} blocked the attack`);
+            toast.info(`${defendingPlayer} blocked the attack with ${defenseAbility.name}`);
             break;
           case 'reflect':
-            toast.info(`${defendingPlayer} reflected the attack`);
+            toast.info(`${defendingPlayer} reflected the attack with ${defenseAbility.name}`);
             break;
         }
       }
@@ -190,42 +198,29 @@ export default function Gameplay({roomId} : {roomId: string}) {
 };
 
   return (
-    <div className='bg-[url("/game-play-bg.png")] bg-cover bg-no-repeat h-full overflow-auto  pt-[15px] relative'>
-      <div className="flex flex-col gap-5 px-5">
-        <div>
-          <PlayerHealth  gameState={gameState} />
-        </div>
-        <div className="flex justify-end">
-          <OpponentPlayerHealth gameState={gameState} />
-        </div>
-      </div>
-      <div className="flex flex-col items-center justify-center mt-10 mb-5">
-        <span className="text-[22px] font-bold text-white my-2 text-center">
-          {gameState.currentTurn === 'player1' ? 'Player 1 turn' : 'Player 2 turn'}
+    <div className='w-[95%] lg:w-[707px] relative mx-auto lg:px-0'>
+        <OpponentPlayerHealth gameState={gameState} />
+      <div className="flex flex-col items-center my-[30px] bg-[#3F3F3F] rounded-[10px] p-6 pt-5">
+        <span className="text-[22px] font-bold text-white text-center">
+          {/* {gameState.currentTurn === 'player1' ? 'Player 1 turn' : 'Player 2 turn'} */}
         </span>
-        <div className='bg-[url("/dice-bg.png")] bg-cover flex flex-col justify-center items-center h-[164px] w-[164px] gap-3'>
-        <div className='bg-[url("/green-grass-texture.png")] bg-contain bg-no-repeat bg-center flex justify-center items-center h-[123px] w-[123px]'>
-          <Image src='/dice-animation.gif' alt='dice' width={100} height={100} />
+        <div className='flex gap-[10px] lg:gap-[23px]'>
+          {diceImages.map((img, index) => (
+            <div key={index} className={`${gameState?.diceRolls?.[address as string] === index  + 1 ? 'outline-2 outline-[#B5A58F] outline-offset-[3px] lg:outline-offset-[6px] rounded-[10px]' : '' } mb-[10px]`}>
+              <img src={img} alt={img} className='size-[42px] lg:size-[90px] rounded-[10px] drop-shadow-lg'/>
+            </div>
+          ))}
         </div>
-        </div>
-        <div className='space-y-3 flex flex-col justify-center items-center mt-2'>
-          <DiceRoll />
+        <div className='space-y-[14px] flex flex-col justify-center items-center mt-2 bg-[#494949] w-full rounded-[10px] py-[18px]'>
           <DiceRollToDetermineFirstTurn />
+          <DiceRoll />
         </div>
-      </div>
-      <div className='flex justify-end my-2'>
-        <span className='p-2 rounded-[5px] bg-white'><HowToPlay iconSize={12} textSize='text-sm' color='black'/></span>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <span className="text-[14px] rounded-[10px] font-extrabold w-[337px] text-center h-[37px] flex justify-center items-center text-white bg-[#5B2D0C]">
-          Battle stake - <span>{(stakeDetails?.stakeAmount as number * 2).toLocaleString()}</span>{stakeDetails?.symbol}
-        </span>
-        <div className='bg-[url("/ability-bg.png")] bg-cover w-[384px] h-[271px] flex justify-center items-center'>
-          <PlayerAbility gameState={gameState} userId={address as string} />
-        </div>
+        <PlayerHealth  gameState={gameState} />
       </div>
-      <div className="absolute h-vh top-0 w-full">
-        {showWinner && <WonMessage {...stakeDetails as StakeDetails}/>}
+      <div className="absolute top-0 w-full h-full">
+        {showWinner && <WonMessage stakeDetails={stakeDetails as StakeDetails} roomId={roomId}/>}
         {showLoser && <LostMessage {...stakeDetails as StakeDetails}/>}
         {showDefenseModal && defendingPlayer === gameState.currentTurn && (
         <DefenseModal

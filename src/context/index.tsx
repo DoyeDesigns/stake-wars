@@ -1,11 +1,11 @@
 'use client'
 
-import { wagmiAdapter, solanaWeb3JsAdapter, projectId, networks } from '@/config'
+import { wagmiAdapter, solanaWeb3JsAdapter, projectId, networks, customNetwork } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
-import { mainnet, solana } from '@reown/appkit/networks'
+// import { mainnet, solana, solanaDevnet } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient();
 
@@ -32,18 +32,16 @@ const metadata = {
 export const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   projectId,
-  defaultNetwork: mainnet,
+  defaultNetwork: customNetwork,
   networks,
   metadata,
-  featuredWalletIds: [
-    'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-    '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369',
-    '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0'
-  ],
   themeMode: 'dark',
   features: {
     analytics: true,
-    onramp: true
+    onramp: true,
+    socials: false,
+    email: false,
+    swaps: false
   },
   chainImages: {
     10143: '/monad.jpg',

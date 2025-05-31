@@ -3,6 +3,7 @@
 import useOnlineGameStore from "@/store/online-game-store";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { toast } from 'react-toastify';
+import { Button } from "./ui/button";
 
 const DiceRollToDetermineFirstTurn = () => {
     const { checkDiceRollsAndSetTurn, rollAndRecordDice, gameState } = useOnlineGameStore();
@@ -33,14 +34,13 @@ const DiceRollToDetermineFirstTurn = () => {
     };
   
     return (
-      <div className={`flex items-center gap-5 ${hasPlayerRolled ? 'hidden' : ''}`}>
-        <button
+      <div className={`flex items-center gap-5`}>
+        <Button
           disabled={hasPlayerRolled} 
-          className="bg-accent text-white py-2 px-4 rounded-xl disabled:bg-accent/70 disabled:text-white" 
-          onClick={handleRollDice}
-          >Roll Dice to determine first player
-        </button>
-        <p>{gameState?.diceRolls?.[address!]}</p>
+          className="bg-[#7531CD] h-[40px] w-[230px] lg:w-[308px] !rounded lg:h-[36px] text-white py-2 px-4 !cursor-pointer disabled:bg-[#7531CD]/85 disabled:text-white" 
+          onClick={() => handleRollDice()}
+          >Roll Dice to decide first player
+        </Button>
       </div>
     );
   };

@@ -1,6 +1,8 @@
 'use client'
+
 import React from 'react';
 import useOnlineGameStore from '@/store/online-game-store'; 
+import { Button } from './ui/button';
 
 interface DefenseModalProps {
   player: 'player1' | 'player2';
@@ -30,14 +32,14 @@ const availableDefenses = Object.entries(defenseInventory)
   const renderDefenseButton = (defenseType: string) => {
     const count = defenseInventory[defenseType] || 0;
     return (
-      <button
+      <Button
         key={defenseType}
         onClick={() => onDefenseSelect(defenseType)}
-        className="bg-secondary text-white px-4 py-2 rounded mr-2 mb-2 hover:bg-secondary/50 animate-pulse disabled:opacity-50"
+        className="bg-[#A78ACE] cursor-pointer text-white px-5 py-2 rounded-[10px] mr-2 mb-2 hover:bg-[#A78ACE]/80 disabled:opacity-50"
       >
         {defenseType.charAt(0).toUpperCase() + defenseType.slice(1)}
-        <span className="ml-2 bg-blue-600 px-2 rounded-full">{count}</span>
-      </button>
+        <span className="ml-0.5 text-[#A22509]">({count})</span>
+      </Button>
     );
   };
 
@@ -46,8 +48,8 @@ const availableDefenses = Object.entries(defenseInventory)
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+    <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[#111318] p-6 rounded-[10px] shadow-xl max-w-md w-full">
         <h2 className="text-xl font-bold mb-4">
           {player === 'player1' ? 'Player 1' : 'Player 2'} Defense Options
         </h2>
@@ -63,20 +65,20 @@ const availableDefenses = Object.entries(defenseInventory)
         )}
 
         {showSkipButton && (
-          <button
+          <Button
             onClick={() => onDefenseSelect(null)}
-            className="w-full bg-accent text-white px-4 py-2 rounded hover:bg-red-600"
+            className="w-full bg-[#A22509] cursor-pointer text-white px-4 py-2 rounded hover:bg-[#A22509]/80"
           >
             Skip Defense (Take Damage)
-          </button>
+          </Button>
         )}
 
-        <button
+        <Button
           onClick={onClose}
-          className="mt-4 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+          className="mt-4 bg-gray-300 cursor-pointer text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
         >
           Close
-        </button>
+        </Button>
       </div>
     </div>
   );

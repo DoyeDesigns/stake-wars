@@ -17,7 +17,7 @@ export interface Ability {
   
   export const CHARACTERS: Character[] = [
     {
-      id: 'donald-pump',
+      id: 'froggy',
       name: 'Donald Pump',
       specialty: 'Offensive Powerhouse',
       baseHealth: 200,
@@ -71,7 +71,7 @@ export interface Ability {
       ]
     },
     {
-      id: 'abraham-lickin',
+      id: 'champ',
       name: 'Abraham Lickin',
       specialty: 'Balanced Strategist',
       baseHealth: 200,
@@ -125,7 +125,7 @@ export interface Ability {
       ]
     },
     {
-      id: 'king-barkles',
+      id: 'ducky',
       name: 'King Barkles III',
       specialty: 'Royal Defender',
       baseHealth: 200,
@@ -179,7 +179,7 @@ export interface Ability {
       ]
     },
     {
-      id: 'vladimir-muffin',
+      id: 'high-alien',
       name: 'Vladimir Muffin',
       specialty: 'Tactical Disruptor',
       baseHealth: 200,

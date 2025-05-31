@@ -1,39 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-* {
-  padding: 0px;
-  margin: 0px;
-  box-sizing: border-box;
+:root {
+  --background: #000000;
+  --foreground: #171717;
+  --text-color: #ffffff;
 }
 
-
-.progress-primary::-moz-progress-bar {
-  @apply bg-gradient-to-r from-primary to-secondary;
+body {
+  background: var(--background);
+  color: var(--text-color);
 }
 
-.progress-primary:indeterminate {
-  @apply bg-primary border; 
+.connect-button-bg { 
+  background: linear-gradient(91.32deg, #6832AE -4.43%, #414FCC 47.74%, #381B5D 99.91%);
 }
 
-.progress-primary::-webkit-progress-value {
-  @apply bg-primary border;
+.connect-button-bg:hover {
+  background: linear-gradient(
+  91.32deg,
+  rgba(104, 50, 174, 0.8)  -4.43%,
+  rgba(65,  79, 204, 0.8)  47.74%,
+  rgba(56,  27,  93, 0.8)  99.91%
+);
 }
 
-.gradient-tracker {
-  @apply bg-gradient-to-r from-[#8119FF] to-[#F76217];
+.charecter-select {
+  box-shadow: 0px 4px 7.2px 3px rgba(191, 229, 40, 0.39);
 }
 
-/* Reverse Progress Bar */
-.progress-reverse {
-  transform: scaleX(-1); /* Flip the progress bar */
-}
-
-.progress-reverse::-webkit-progress-value {
-  transform: scaleX(-1); /* Flip the progress value */
-}
-
-.progress-reverse::-moz-progress-bar {
-  transform: scaleX(-1); /* Flip the progress value */
-}
+@theme {  --drop-shadow-3xl: 0px 2px 23.1px 3px rgba(0, 0, 0, 0.25);}
