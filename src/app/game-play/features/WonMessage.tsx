@@ -71,9 +71,8 @@ export default function WonMessage({ stakeDetails, roomId }: WonMessageProps) {
             </Button>
             <Button
               onClick={() => claimPot()}
-              className="border-none bg-[#B91770] hover:bg-[#B91770]/80 cursor-pointer text-[#381B5D] font-bold text-[12px] w-[190px] h-[38px] rounded-[4px]"
+              className="border-none connect-button-bg text-white bg-[#B91770] hover:bg-[#B91770]/80 cursor-pointer font-bold text-[12px] w-[190px] h-[38px] rounded-[4px]"
             >
-              <img src="/exit.png" alt="winner-bg" width={24} height={24} />{" "}
               Claim Pot
             </Button>
           </div>

@@ -106,7 +106,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
       setShowDefenseModal(false);
       setShowSkipDefenseButton(false);
 
-      toast(`⚔️ ${gameState.lastAttack.attackingPlayer} attacked with ${gameState.lastAttack.ability.name} for ${gameState.lastAttack.ability.value}} damage!`);
+      toast(`⚔️ ${gameState.lastAttack.attackingPlayer} attacked with ${gameState.lastAttack.ability.name} for ${gameState.lastAttack.ability.value} damage!`);
       
       const attackingPlayer = gameState.lastAttack.attackingPlayer;
       const defendingPlayer = attackingPlayer === 'player1' ? 'player2' : 'player1';
@@ -127,7 +127,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
     } else {
       setShowDefenseModal(false);
     }
-  }, [gameState.lastAttack, gameState.winner]);
+  }, [gameState.lastAttack]);
 
   const handleDefenseSelection = async (defenseType: string | null) => {
     const { ability, attackingPlayer } = lastAttackDetails;
@@ -198,7 +198,7 @@ export default function Gameplay({roomId} : {roomId: string}) {
       <div className="flex flex-col justify-center items-center">
         <PlayerHealth  gameState={gameState} />
       </div>
-      <div className={`absolute top-0 w-full ${showDefenseModal ? 'h-full' : ''}`}>
+      <div className={`absolute top-0 w-full ${showDefenseModal || showWinner || showLoser ? 'h-full' : ''}`}>
         {showWinner && <WonMessage stakeDetails={stakeDetails as StakeDetails} roomId={roomId}/>}
         {showLoser && <LostMessage {...stakeDetails as StakeDetails}/>}
         {showDefenseModal && defendingPlayer === gameState.currentTurn && (

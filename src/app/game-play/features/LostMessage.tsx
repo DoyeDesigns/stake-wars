@@ -18,7 +18,7 @@ export default function LostMessage(stakeDetails: StakeDetails) {
           <div className='flex flex-col justify-center items-center gap-4 -mt-48'>
           <div className='flex flex-col justify-center items-center'>
               <span className='text-white font-extrabold text-[16px] lg:text-[22px] text-center'>You Lost!!</span>
-              <span className='text-white font-extrabold text-[16px] lg:text-[22px] text-center'>{stakeDetails.stakeAmount.toLocaleString()}{stakeDetails.symbol}</span>
+              <span className='text-white font-extrabold text-[16px] lg:text-[22px] text-center'>{stakeDetails.stakeAmount.toLocaleString()} g{stakeDetails.symbol}</span>
           </div>
           <Button onClick={() => router.push('/')} className='border-none bg-white cursor-pointer text-[#381B5D] font-bold text-[12px] w-[190px] h-[38px] rounded-[4px]'><img src='/rematch.png' alt='winner-bg' width={24} height={24} /> Rematch</Button>
           <Button onClick={() => router.push('/')} className='border-none bg-white cursor-pointer text-[#381B5D] font-bold text-[12px] w-[190px] h-[38px] rounded-[4px]'><img src='/exit.png' alt='winner-bg' width={24} height={24} /> Exit Game</Button>
