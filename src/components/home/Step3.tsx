@@ -9,9 +9,11 @@ function Step3({roomId} : {roomId : string}) {
     toast.info('Copied room Id to clipboard')
   };
 
+  const roomLink = `https://stake-wars.vercel.app/?gid=/${roomId}`;
+
   return (
     <div className='flex flex-col gap-[18px] items-center justify-center mb-[40px] pt-[240px]'>
-      <span className='font-bold text-white'>This is your game room ID click to copy <Button className='text-[#BFE528] bg-transparent p-0 animate-pulse' onClick={() => handleClick(roomId)}>{roomId}</Button>. Share with a friend to begin battle!</span>
+      <span className='text-white'>This is your game room ID click to copy <Button className='text-[#BFE528] bg-transparent p-0 animate-pulse font-bold' onClick={() => handleClick(roomLink)}>{roomLink}</Button>. Share with a friend to begin battle!</span>
       <span className="loading loading-dots loading-lg bg-primary"></span>
     </div>
   );
