@@ -1,84 +1,59 @@
-# 🎮 Stake Wars(A Crypto Combat Arena): PvP Battle Game
+# 🥷 Stake Wars
 
-<div align="center">
-  <img src="![stake-wars-logo](https://github.com/user-attachments/assets/b90c8f0c-a9fe-4920-97b8-15e96e8cc0f7)
-" alt="Logo" width="200"/>
-</div>
+**Stake Wars** is a fast-paced, on-chain strategy game where players mint unique NFT characters and battle each other using dice rolls and staked tokens. It blends DeFi with gaming by letting users stake *liquid tokens* (that continue to earn yield) while they fight for glory.
 
-A blockchain-based battling game where players stake SOL, choose unique characters, and engage in dice-driven tactical combat on the Solana chain.
+> 🚧 **Note:** We’re actively developing! The current working branch is `version2` (not `main`).
 
-## 🌟 Key Features
-- **Multi-Chain Battles** 🔗  
-  Powered by Reown AppKit multichain feature for seamless cross-chain interactions
-- **SOL Staking** 💰  
-  Risk SOL/MON/ETH/vDOT tokens to challenge opponents with 2x reward potential
-- **Character System** 🦸  
-  4 unique characters with special abilities (Donald Pump, Vladimir Muffin, etc.)
-- **Dice-Based Strategy** 🎲  
-  Dynamic combat system combining chance and skill
-- **Real-Time Firebase Sync** 🔥  
-  Live battle tracking and game state management
+---
 
-### Coming Soon
+## 🎮 Game Overview
 
-- **NFT character minting**
-  One free character NFT on sign-up
-- **Polkadot integration**
-  Deploying the game smart Contract on Moonbeam parachain
-- **liquid staking**
-  Utilising liquid staked tokens as game fuel on Solana and Polkadot(Moonbeam)
-- **Simpleswap on-ramp**
-  Integrating a crypto on-ramp to enable cross-chain swaps
-- **In gam tokens as XP**
-  Rewarding active players with an ERC-20 token as game XP
-- **Discord community**
-  A Discord community for hosting guild events and community events, etc.
-  
-## 🛠 Tech Stack
-- **Blockchain**: Reown AppKit (Multi-Chain),
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
-- **Backend**: Firebase Firestore, Cloud Functions
-- **Auth**: AppKit Wallet Connection (EOA & Smart Accounts)
-- **State Management**: Zustand
+**Stake Wars** is built for the modern web3 gamer. Here's how it works:
 
-## 🎮 Gameplay Overview
+- **🎭 Mint Your Hero**  
+  Each player selects a unique warrior to enter the arena.  
+  _(We currently use 4 hardcoded characters while NFT integration is in progress.)_
 
-### 🛡️ Setup Phase
+- **💰 Stake to Play**  
+  Players stake *liquid staked tokens* using remote staking (via protocol infrastructure) to join battles. Tokens still earn staking rewards even during gameplay.
 
-1. **Wallet Connection**
-   - Connect multi-chain wallet using Reown AppKit
-   - Supported chains: Solana, Ethereum
+- **🎲 Roll for Glory**  
+  Players roll dice to determine turn order and battle outcomes. Attacks and defense use strategic abilities influenced by dice rolls.
 
-<div align="center">
-  <img src="/public/connect-wallet.gif" alt="Logo" width="200"/>
-</div>
+- **🏆 Winner Takes the Pot**  
+  The winning player takes the combined staked tokens, making each game thrilling and high-stakes.
 
-2. **Stake SOL**
+---
 
-<div align="center">
-  <img src="/public/create-game.gif" alt="Logo" width="200"/>
-</div>
+## 🔧 Tech Stack
 
-## ⚔️ Combat Phase
-The combat phase is where players engage in tactical battle using their chosen characters and dice rolls.
+- **Frontend/State Management**: React + Zustand  
+- **Backend**: Firebase Firestore  
+- **Blockchain Integration**: Liquid staking + remote staking logic via proxy  
+- **Real-time Game Rooms**: Powered by Firestore listeners
 
-### 🔄 Turn Sequence
-<div align="center">
-  <div style="display: flex; justify-content: center; gap: 20px;">
-    <img src="/public/won.gif" alt="Create Game Demo" width="200"/>
-    <img src="/public/lost.gif" alt="Join Game Demo" width="200"/>
-  </div>
-</div>
+---
 
-```mermaid
-graph TD
-    A[Start Combat] --> B[Player 1 Dice Roll]
-    B --> C{Resolve Attack}
-    C -->|Damage| D[Player 2 Defense Phase]
-    D --> E{Defense Choice}
-    E -->|Reflect| F[Return Damage]
-    F --> I[Player 2 Turn]
-    E -->|Dodge| G[Player 1 Turn Again]
-    E -->|Block| H[Reduce Damage]
-    H --> I[Player 2 Turn]
-```
+## 📁 Important Branch Info
+
+> The active deployment and development branch is `version2`.  
+> Please check out that branch for the most up-to-date code.
+
+---
+
+## 📦 Features in Progress
+
+- NFT character minting  
+- In-game token rewards  
+- Wallet authentication (via Reown AppKit)  
+- On-chain recordkeeping for match outcomes  
+- Enhanced game UI/UX
+
+---
+
+## 🤝 Contributing
+
+We're still early, but contributions are welcome! Feel free to clone the `version2` branch, explore the code, and suggest features or fixes.
+
+```bash
+git checkout version2
