@@ -1,6 +1,6 @@
 # 🥷 Stake Wars
 
-**Stake Wars** is a fast-paced, on-chain strategy game where players mint unique NFT characters and battle each other using dice rolls and staked tokens. It blends DeFi with gaming by letting users stake *liquid tokens* (that continue to earn yield) while they fight for glory.
+**Stake Wars** is a fast-paced, on-chain strategy game where players mint unique NFT characters and battle each other using dice rolls and staked tokens. It blends DeFi with gaming by letting users stake to get *liquid tokens* (that continue to earn yield) while they fight for glory.
 
 > 🚧 **Note:** We’re actively developing! The current working branch is `version2` (not `main`).
 
