@@ -9,8 +9,14 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { compactHash } from './ConnectButton';
 import { Label } from './ui/label';
+import { Dispatch, SetStateAction } from "react";
+import { DialogClose } from './ui/dialog';
 
-const GameRoomSearch = () => {
+interface GameRoomSearchProps {
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const GameRoomSearch = ({setIsOpen} : GameRoomSearchProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [gameRoom, setGameRoom] = useState<GameRoomDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +57,7 @@ const GameRoomSearch = () => {
   const handleJoinRoom = async () => {
     if (!gameRoom) return;
       router.push(`/?gid=${gameRoom.id}`);
+      setIsOpen(false);
   };
 
   return (
